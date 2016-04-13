@@ -31,7 +31,7 @@ class Carte():
             elif alea == 1:
                self.terrain[i][j].setTerrainForet()
             elif alea == 2:
-               self.terrain[i][j].setTerrainPlaine()
+               self.terrain[i][j].setTerrainMontagne()
             elif alea == 3:
                self.terrain[i][j].setTerrainPlaine()
             elif alea == 4:
