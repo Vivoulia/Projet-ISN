@@ -93,7 +93,7 @@ class GameZone(ZoneAffichage):
    
    def currentTuile(self):
       return self.currentTuile
-   
+
    def selectTerritoire(self, tuile):
       """SELECTIONNE LES TERRITOIRES D'UNE MAIRIE ET AFFICHE A LA FENETRE LA ZONE DE SELECTION"""
       self.deselect()
@@ -193,23 +193,22 @@ class ArbreCompetence(Canvas):
       self.unlockedList = list()
       self.fond = elementGraphique.Fond(30, 3000, self)
       self.technologie = elementGraphique.Technologie(210, 330, self)
-      self.upgradeList.append(self.technologie)
       self.militaire = elementGraphique.Militaire(450, 190, self)
-      self.upgradeList.append(self.militaire)      
       self.magie = elementGraphique.Magie(710, 330, self)
-      self.upgradeList.append(self.magie)      
+      self.upgradeList.append(self.militaire)
+      self.upgradeList.append(self.technologie)
+      self.upgradeList.append(self.magie)
       self.afficherArbre()
-      
+
    def afficherArbre(self):
       print("affichage arbre de competence")
       self.croll = 0
       self.create_image(self.fond.x, self.fond.y, image = self.fond.getTexture(), anchor=SW)
       for amelioration in self.upgradeList :
          self.afficherElement(amelioration)
-      for amelioration in self.unlockedList:
-         self.afficherElement(Cadre)
-      
-   
+      for cadre in self.unlockedList:
+         self.afficherElement(cadre)
+
    def afficherElement(self, element):
       """AFFICHE UN OBJET DE TYPE ELEMENT GRAPHIQUE ENVOYE EN PARAMETRE"""
       tkId = self.create_image(element.x, element.y, image=element.getTexture(), anchor=SW) 
@@ -310,31 +309,34 @@ class Fenetre():
          elif len(self.gameZone.selectedTkId) != 0:
             self.gameZone.deselect()
             self.userInterface.clear()
-            #self.descriptionTexte.set(self.carte.terrain[x][y].getTerrain().getDescription())
+            #self.description
+            
+   def onArbreClick(self, event):
+      """ CLIC DANS L'ARBRE DES COMPETENCES """
+      item = event.widget.find_closest(event.x, event.y)
+      for iAmelioration in self.arbreCompetence.upgradeList:
+         if iAmelioration.tkId == item[0]:
+            x = iAmelioration.x
+            y = iAmelioration.y
+            self.arbreCompetence.cadre = elementGraphique.Cadre(x, y, self)
+            self.arbreCompetence.unlockedList.append(self.arbreCompetence.cadre)
+            print (self.arbreCompetence.unlockedList)
+            print (iAmelioration.effet)
       self.gameZone.update()
    
    def onBoutonClique(self, event):
       """ EVENEMENT CLIQUE D'UNE IMAGE SUR LE CANVAS USERINTERFACE """
-      screenX = self.userInterface.canvasx(event.x) 
-      screenY  = self.userInterface.canvasy(event.y)      
+      screenX = self.userInterface.canvasx(event.x)
+      screenY  = self.userInterface.canvasy(event.y)
       item = event.widget.find_closest(screenX, screenY)
       for iBouton in self.userInterface.boutonListe:
          if iBouton.tkId == item[0]:
             iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
             self.gameZone.afficherElementIndex(self.gameZone.currentTuile.getBatiment())
             self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
-            self.gameZone.selectTerritoire(self.gameZone.currentCity)            
-   
-   def onArbreClick(self, event):
-      """ PASCAL A FAIRE ARBRE DES COMPETENCES """
-      item = event.widget.find_closest(event.x, event.y)
-      for iAmelioration in self.arbreCompetence.upgradeList:
-         if iAmelioration.tkId == item[0]:
-            self.arbreCompetence.unlockedList.append(iAmelioration)
-            print (self.arbreCompetence.unlockedList)
-            print (iAmelioration.effet)
-            
-   
+            self.gameZone.selectTerritoire(self.gameZone.currentCity)
+
+
    def onKeyPress(self, event):
       """METHODE APPELE QUAND UNE TOUCHE DU CLAVIER EST ENFONCE"""
       if event.char == "z":
