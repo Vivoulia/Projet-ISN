@@ -159,12 +159,14 @@ class UserInterface(Canvas):
       self.boutonMine = elementGraphique.BoutonMine()
       self.boutonScierie = elementGraphique.BoutonScierie()
       self.boutonCaserne = elementGraphique.BoutonCaserne()
+      self.boutonRecrutementEpeiste = elementGraphique.BoutonRecrutementEpeiste()
       self.boutonListe.append(self.boutonTour)
       self.boutonListe.append(self.boutonChamp)
       self.boutonListe.append(self.boutonEntrepot)
       self.boutonListe.append(self.boutonMine)
       self.boutonListe.append(self.boutonScierie)
       self.boutonListe.append(self.boutonCaserne)
+      self.boutonListe.append(self.boutonRecrutementEpeiste)
       
    def afficherElement(self, element):
       """AFFICHE UN OBJET DE TYPE ELEMENT GRAPHIQUE ENVOYE EN PARAMETRE"""
@@ -191,6 +193,9 @@ class UserInterface(Canvas):
             self.afficherElement(self.boutonEntrepot)
             self.afficherElement(self.boutonCaserne)
       else:
+         if tuile.getBatiment().getNom() == "Caserne":
+            self.boutonRecrutementEpeiste.setIndice(0)
+            self.afficherElement(self.boutonRecrutementEpeiste)           
          pass
       
    
@@ -306,6 +311,7 @@ class Fenetre():
    
    def onTuileClick(self, event):
       x, y = self.gameZone.translateToIsoScroll(event.x, event.y)
+      self.userInterface.clear()
       print(x, y)
       self.gameZone.currentTuile = self.carte.terrain[x][y]
       if self.carte.terrain[x][y].getBatiment() != None:
@@ -316,7 +322,8 @@ class Fenetre():
                #on met en selection les zones constructibles
                self.gameZone.selectTerritoire(self.carte.terrain[x][y])
             else:
-               self.gameZone.deselect()
+               self.userInterface.clear()
+               self.userInterface.affichageBouton(self.carte.terrain[x][y])
          else:
             pass
             
@@ -339,8 +346,10 @@ class Fenetre():
       item = event.widget.find_closest(screenX, screenY)
       for iBouton in self.userInterface.boutonListe:
          if iBouton.tkId == item[0]:
-            iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
-            self.gameZone.afficherElementIndex(self.gameZone.currentTuile.getBatiment())
+            element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
+            print(element)
+            if element != None:
+               self.gameZone.afficherElementIndex(element)
             self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
             self.gameZone.selectTerritoire(self.gameZone.currentCity)            
    
