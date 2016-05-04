@@ -400,9 +400,14 @@ class Fenetre():
    def onArbreClick(self, event):
       """ PASCAL A FAIRE ARBRE DES COMPETENCES """
       item = event.widget.find_closest(event.x, event.y)
-      for iAmelioration in self.arbreCompetence.upgradeList:
+      for iAmelioration in self.arbreCompetence.availableList:
          if iAmelioration.tkId == item[0]:
             self.arbreCompetence.unlockedList.append(iAmelioration)
+            x = iAmelioration.x
+            y = iAmelioration.y
+            self.arbreCompetence.cadre = elementGraphique.Cadre(x, y, ArbreCompetence)
+            self.arbreCompetence.unlockedList.append(self.arbreCompetence.cadre)
+            self.arbreCompetence.afficherElement(self.arbreCompetence.cadre)            
             print (self.arbreCompetence.unlockedList)
             print (iAmelioration.effet)
             
