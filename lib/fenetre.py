@@ -138,7 +138,9 @@ class UserInterface(Canvas):
       Canvas.__init__(self, widgetParent, bg=background, width=width, height=height)
       self.parent = widgetParent
       self.fenetre = fenetre
+      
       """ CREATION DE LA ZONE D'INFORMATION """
+      
       self.descriptionTexte = StringVar()
       self.descriptionTexte.set("Aucune Tuile")
       self.description = Label(self.parent, textvariable=self.descriptionTexte)
@@ -151,18 +153,18 @@ class UserInterface(Canvas):
       """ BOUTON """
       
       self.boutonListe = list()
-      boutonTour = elementGraphique.BoutonTour(20,350)
-      boutonChamp = elementGraphique.BoutonChamp(20,450)
-      boutonEntrepot = elementGraphique.BoutonEntrepot(20,550)
-      boutonMine = elementGraphique.BoutonMine(20,650)
-      boutonScierie = elementGraphique.BoutonScierie(20,750)
-      boutonCaserne = elementGraphique.BoutonCaserne(20,850)
-      self.boutonListe.append(boutonTour)
-      self.boutonListe.append(boutonChamp)
-      self.boutonListe.append(boutonEntrepot)
-      self.boutonListe.append(boutonMine)
-      self.boutonListe.append(boutonScierie)
-      self.boutonListe.append(boutonCaserne)
+      self.boutonTour = elementGraphique.BoutonTour()
+      self.boutonChamp = elementGraphique.BoutonChamp()
+      self.boutonEntrepot = elementGraphique.BoutonEntrepot()
+      self.boutonMine = elementGraphique.BoutonMine()
+      self.boutonScierie = elementGraphique.BoutonScierie()
+      self.boutonCaserne = elementGraphique.BoutonCaserne()
+      self.boutonListe.append(self.boutonTour)
+      self.boutonListe.append(self.boutonChamp)
+      self.boutonListe.append(self.boutonEntrepot)
+      self.boutonListe.append(self.boutonMine)
+      self.boutonListe.append(self.boutonScierie)
+      self.boutonListe.append(self.boutonCaserne)
       
    def afficherElement(self, element):
       """AFFICHE UN OBJET DE TYPE ELEMENT GRAPHIQUE ENVOYE EN PARAMETRE"""
@@ -171,9 +173,26 @@ class UserInterface(Canvas):
       self.tag_bind(tkId, '<ButtonPress-1>', self.fenetre.onBoutonClique)  
       self.update()
       
-   def affichageBouton(self):
-      for iBouton in self.boutonListe:
-         self.afficherElement(iBouton)
+   def affichageBouton(self, tuile):
+      if tuile.getBatiment() == None:
+         if tuile.getTerrain().getNom() == "Foret":
+            self.boutonScierie.setIndice(0)
+            self.afficherElement(self.boutonScierie)
+         elif tuile.getTerrain().getNom() == "Montagne":
+            self.boutonMine.setIndice(0)
+            self.afficherElement(self.boutonMine)
+         elif tuile.getTerrain().getNom() == "Plaine":
+            self.boutonTour.setIndice(0)
+            self.boutonChamp.setIndice(1)
+            self.boutonEntrepot.setIndice(2)
+            self.boutonCaserne.setIndice(3)
+            self.afficherElement(self.boutonTour)
+            self.afficherElement(self.boutonChamp)
+            self.afficherElement(self.boutonEntrepot)
+            self.afficherElement(self.boutonCaserne)
+      else:
+         pass
+      
    
    def affichageInformation(self):
       """ METHODE QUI AFFICHE LES INFORMATION SUR UNE CASE """
@@ -289,11 +308,10 @@ class Fenetre():
       self.gameZone.currentTuile = self.carte.terrain[x][y]
       if self.carte.terrain[x][y].getBatiment() != None:
          #Il y a un batiment sur la tuile
-         #self.descriptionTexte.set(self.carte.terrain[x][y].getBatiment().getDescription())
          if self.gameController.getJoueurActif() == self.carte.terrain[x][y].getBatiment().camp:
             if self.carte.terrain[x][y].getBatiment().getNom() == "Mairie Ressource":
                self.gameZone.currentCity = self.carte.terrain[x][y]
-               #on met en séléction les zones constructibles
+               #on met en selection les zones constructibles
                self.gameZone.selectTerritoire(self.carte.terrain[x][y])
             else:
                self.gameZone.deselect()
@@ -303,8 +321,9 @@ class Fenetre():
             pass
       else:
          if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
-            print("On propose de construire un batiment")
-            self.userInterface.affichageBouton()
+            #Affichage des boutons 
+            self.userInterface.clear()
+            self.userInterface.affichageBouton(self.carte.terrain[x][y])
          elif len(self.gameZone.selectedTkId) != 0:
             self.gameZone.deselect()
             self.userInterface.clear()

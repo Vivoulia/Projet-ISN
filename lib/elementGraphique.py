@@ -177,18 +177,17 @@ class Foret(Decor):
       
 """ ELEMENT INTERFACE UTILISASATEUR """
 
-class Bouton():
-   def __init__(self, x, y, textureName, cheminTexture = "texture/GUI"):
-      self.x = x
-      self.y = y
-      self.cheminTexture = cheminTexture
-      self.textureName = textureName
-      self.fileNameTexture=self.cheminTexture + self.textureName
-      self.texture = PhotoImage(file = self.fileNameTexture)
-      
+class Bouton(ElementGraphique):
+   def __init__(self, textureName, cheminTexture = "texture/GUI/"):
+      parent = None #a supprimers
+      self.x = 20
+      self.y = 350
+      self.indice = 0
+      ElementGraphique.__init__(self, self.x, self.y, parent, textureName, cheminTexture)
       self.nom = "Bouton"
       self.description = "Description Au survol de la souris"
       self.tkId = None
+      
    def event(self):
       pass
    
@@ -197,50 +196,54 @@ class Bouton():
    
    def setTkId(self, identifiant):
       self.tkId = identifiant
+      
+   def setIndice(self, indice):
+      """DONNE DES COORDONNEES EN FONCTION DE L'INDICE"""
+      self.y = 350 + indice*100
 
 class BoutonChamp(Bouton):
-   def __init__(self, x, y, textureName = "Bouton_illustration_champ.gif", cheminTexture = "texture/GUI/"):
-      Bouton.__init__(self, x, y, textureName, cheminTexture)
+   def __init__(self, textureName="bouton_illustration_champ.gif"):
+      Bouton.__init__(self, textureName)
    
    def event(self, tuile, camp):
       tuile.addBatimentChamp(camp)
       
 
 class BoutonEntrepot(Bouton):
-   def __init__(self, x, y, textureName = "bouton_illustration_entrepot.gif", cheminTexture = "texture/GUI/"):
-      Bouton.__init__(self, x, y, textureName, cheminTexture)
+   def __init__(self, textureName="bouton_illustration_entrepot.gif"):
+      Bouton.__init__(self, textureName)
    
    def event(self, tuile, camp):
       tuile.addBatimentEntrepot(camp)
       
       
 class BoutonMine(Bouton):
-   def __init__(self, x, y, textureName = "Bouton_illustration_mine.gif", cheminTexture = "texture/GUI/"):
-      Bouton.__init__(self, x, y, textureName, cheminTexture)
+   def __init__(self, textureName="bouton_illustration_mine.gif"):
+      Bouton.__init__(self, textureName)
    
    def event(self, tuile, camp):
       tuile.addBatimentMine(camp)
 
       
 class BoutonScierie(Bouton):
-   def __init__(self, x, y, textureName = "bouton_illustration_scierie.gif", cheminTexture = "texture/GUI/"):
-      Bouton.__init__(self, x, y, textureName, cheminTexture)
+   def __init__(self, textureName="bouton_illustration_scierie.gif"):
+      Bouton.__init__(self, textureName)
    
    def event(self, tuile, camp):
       tuile.addBatimentScierie(camp)
 
 
 class BoutonTour(Bouton):
-   def __init__(self, x, y, textureName = "bouton_illustration_tour.gif", cheminTexture = "texture/GUI/"):
-      Bouton.__init__(self, x, y, textureName, cheminTexture)
+   def __init__(self, textureName="bouton_illustration_tour.gif"):
+      Bouton.__init__(self, textureName)
    
    def event(self, tuile, camp):
       tuile.addBatimentTour(camp)
 
 
 class BoutonCaserne(Bouton):
-   def __init__(self, x, y, textureName = "bouton_illustration_caserne.gif", cheminTexture = "texture/GUI/"):
-      Bouton.__init__(self, x, y, textureName, cheminTexture)
+   def __init__(self, textureName="bouton_illustration_caserne.gif"):
+      Bouton.__init__(self, textureName)
    
    def event(self, tuile, camp):
       tuile.addBatimentCaserne(camp)
