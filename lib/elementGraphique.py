@@ -11,7 +11,7 @@ class ElementGraphique():
       self.texture = PhotoImage(file = self.fileNameTexture)    
       self.tkId = 0
       self.parent = parent
-      
+
    def setTkId(self, identifiant):
       self.tkId = identifiant
    
@@ -25,7 +25,7 @@ class ElementJouable(ElementGraphique):
       self.textureDesc = textureDesc
       self.fileNameDesc= self.cheminDesc + self.textureDesc
       self.descImage = PhotoImage(file = self.fileNameDesc)
-	  
+
 class Terrain(ElementJouable):
    def __init__(self,x, y, parent, textureName, textureDesc="testTuile2D.gif", cheminTexture = "texture/Terrain/", cheminDesc = "texture/Terrain/"):
       ElementJouable.__init__(self, x, y, parent, textureName, textureDesc, cheminTexture, cheminDesc)
