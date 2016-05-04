@@ -93,13 +93,11 @@ class GameZone(ZoneAffichage):
    
    def currentTuile(self):
       return self.currentTuile
-<<<<<<< HEAD
 
    def selectTerritoire(self, tuile):
-=======
+      pass
    
    def selectTerritoireMairie(self, tuile):
->>>>>>> origin/master
       """SELECTIONNE LES TERRITOIRES D'UNE MAIRIE ET AFFICHE A LA FENETRE LA ZONE DE SELECTION"""
       self.deselect()
       for territoire in tuile.getBatiment().getTerritoire():
@@ -396,11 +394,7 @@ class Fenetre():
             if element != None:
                self.gameZone.afficherElementIndex(element)
             self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
-<<<<<<< HEAD
             self.gameZone.selectTerritoire(self.gameZone.currentCity)
-
-
-=======
             self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)            
    
    def onArbreClick(self, event):
@@ -413,7 +407,7 @@ class Fenetre():
             print (iAmelioration.effet)
             
    
->>>>>>> origin/master
+
    def onKeyPress(self, event):
       """METHODE APPELE QUAND UNE TOUCHE DU CLAVIER EST ENFONCE"""
       if event.char == "z":
