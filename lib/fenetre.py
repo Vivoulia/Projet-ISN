@@ -113,15 +113,16 @@ class GameZone(ZoneAffichage):
       Q = list()
       Q.append(tuile)
       entite = tuile.getEntite()
-      self.deselect()
-      
-      for _ in range(entite[0].pa):
-         for iTuile in Q:
-            n = Q.pop()
-            voisin = self.getVoisin(n)
-            for iVoisin in voisin:
+      i = 0
+      while entite[0].pa > i:
+         n = Q.pop()
+         voisin = self.getVoisin(n)
+         for iVoisin in voisin:
+            if self.selectedTuile.count(iVoisin) == 0:
                self.selectedTuile.append(iVoisin)
                Q.append(iVoisin)
+               print("on passe ici")
+         i+=1
       self.selectTuile(self.selectedTuile)
    
    def translateToIsoScroll(self, x, y):
@@ -335,7 +336,7 @@ class Fenetre():
       self.userInterface.clear()
       self.gameZone.currentTuile = self.carte.terrain[x][y]
       if len(self.carte.terrain[x][y].getEntite()) > 0  :
-         #Il y a des entitÃ©s sur la tuile
+         #Il y a des entitées sur la tuile
          entite = self.carte.terrain[x][y].getEntite()
          self.gameZone.selectTerritoireEntite(self.carte.terrain[x][y])
          print(entite[0].pa)         
