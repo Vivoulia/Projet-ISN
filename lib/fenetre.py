@@ -1,6 +1,7 @@
 from tkinter import *
 from . import elementGraphique
 from random import *
+import queue
 
 MARGE_Y = 50
 MARGE_X = 10 
@@ -61,15 +62,17 @@ class GameZone(ZoneAffichage):
       self.tag_lower(tkId, self.fenetre.carte.terrain[i][j].terrain.tkId)
       self.update()
    
-   def selectTuile(self, selection):
+   def selectTuile(self, selection, texture):
       """AFFICHE LES TUILES ENVOYE DANS UNE LIST EN PARAMETRE"""
-      fileName="texture/case selection.gif"
+      fileName=texture
       self.photo = PhotoImage(file = fileName)
       for iTuile in range(len(selection)):
-         i, j = self.translateToIso(selection[iTuile].x, selection[iTuile].y)
+         i, j = self.translateToIsoScroll(selection[iTuile].x, selection[iTuile].y)
          tkId = self.create_image(selection[iTuile].x, selection[iTuile].y, image=self.photo,  anchor=SW)
          self.tag_bind(tkId, '<ButtonPress-1>', self.fenetre.onTuileClick)
-         if selection[iTuile].getBatiment() != None:
+         print(self.fenetre.carte.terrain[i][j])
+         print(selection[iTuile])
+         if self.fenetre.carte.terrain[i][j].getBatiment() != None:
             self.tag_lower(tkId, self.fenetre.carte.terrain[i][j].getBatiment().tkId)
          elif len(selection[iTuile].getDecor()) != 0:
             decor = selection[iTuile].getDecor()
@@ -105,25 +108,25 @@ class GameZone(ZoneAffichage):
          for iVoisin in territoireVoisin:
             if iVoisin.getBatiment() == None:
                self.selectedTuile.append(iVoisin)
-      self.selectTuile(self.selectedTuile)
+      self.selectTuile(self.selectedTuile, "texture/case selection.gif")
       
    def selectTerritoireEntite(self, tuile):
       """SELECTIONNE LES TERRITOIRES Q'UNE ENTITE PEUT PARCOURIR ET AFFICHE A LA FENETRE LA ZONE DE SELECTION"""
       self.deselect()
-      Q = list()
-      Q.append(tuile)
+      Q = queue.Queue()
+      Q.put(tuile)
       entite = tuile.getEntite()
       i = 0
-      while entite[0].pa > i:
-         n = Q.pop()
-         voisin = self.getVoisin(n)
-         for iVoisin in voisin:
-            if self.selectedTuile.count(iVoisin) == 0:
-               self.selectedTuile.append(iVoisin)
-               Q.append(iVoisin)
-               print("on passe ici")
+      while entite[0].pa >= i:
+         for _ in range(i):
+            n = Q.get()
+            voisin = self.getVoisin(n)
+            for iVoisin in voisin:
+               if self.selectedTuile.count(iVoisin) == 0 and iVoisin != tuile:
+                  self.selectedTuile.append(iVoisin)
+                  Q.put(iVoisin)
          i+=1
-      self.selectTuile(self.selectedTuile)
+      self.selectTuile(self.selectedTuile, "texture/attaquer.gif")
    
    def translateToIsoScroll(self, x, y):
       """TRANSLATE DES COORDONNEES X, Y EN COORDS ISOMETRIQUE"""
@@ -148,7 +151,7 @@ class GameZone(ZoneAffichage):
       ligne = self.fenetre.carte.getNbLigne()
       for i in range(-1, 2, 1):
          if i != 0:
-            if (tuile.i+i <= ligne and tuile.i+i >= 0) and (tuile.j+i <= colonne and tuile.j+i >= 0):
+            if (tuile.i+i < ligne and tuile.i+i >= 0) and (tuile.j+i < colonne and tuile.j+i >= 0):
                voisin.append(self.fenetre.carte.terrain[tuile.i+i][tuile.j])
                voisin.append(self.fenetre.carte.terrain[tuile.i][tuile.j+i])
       return voisin
@@ -335,13 +338,13 @@ class Fenetre():
       x, y = self.gameZone.translateToIsoScroll(event.x, event.y)
       self.userInterface.clear()
       self.gameZone.currentTuile = self.carte.terrain[x][y]
+      
       if len(self.carte.terrain[x][y].getEntite()) > 0  :
-         #Il y a des entitées sur la tuile
+         #Il y a des entitï¿½es sur la tuile
          entite = self.carte.terrain[x][y].getEntite()
          self.gameZone.selectTerritoireEntite(self.carte.terrain[x][y])
-         print(entite[0].pa)         
-         pass
-      
+         print(entite[0].pa)
+
       elif self.carte.terrain[x][y].getBatiment() != None:
          #Il y a un batiment sur la tuile
          if self.gameController.getJoueurActif() == self.carte.terrain[x][y].getBatiment().camp:

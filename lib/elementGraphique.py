@@ -76,7 +76,7 @@ class Entite(ElementJouable):
 class Epeiste(Entite):
    def __init__(self, x, y, camp, parent, textureName = "epeiste.gif", textureDesc="testTuile2D.gif"):
       Entite.__init__(self,x, y, camp, parent, textureName, textureDesc)
-      self.pa = 2
+      self.pa = 3
       
 class Batiment(ElementJouable):
    def __init__(self,x, y, camp, parent, textureName="erreur.gif", textureDesc="testTuile2D.gif", cheminTexture = "texture/Batiment/", cheminDesc = "texture/Batiment/"):
