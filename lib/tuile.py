@@ -31,11 +31,15 @@ class Tuile():
    def addBatimentMairie(self, camp):
       self.batiment = elementGraphique.Mairie(self.x, self.y, camp, self)
       return self.batiment
-      
+   
    def addBatimentMairieRessource(self, camp):
       self.batiment = elementGraphique.MairieRessource(self.x, self.y, camp, self)
       return self.batiment
-      
+   
+   def addBatimentChemin(self, camp):
+         self.batiment = elementGraphique.Chemin(self.x, self.y, camp, self)
+         return self.batiment   
+
    def addBatimentChamp(self, camp):
       self.batiment = elementGraphique.Champ(self.x, self.y, camp, self)
       return self.batiment

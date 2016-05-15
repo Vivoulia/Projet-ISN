@@ -179,6 +179,7 @@ class UserInterface(Canvas):
       self.boutonMine = elementGraphique.BoutonMine()
       self.boutonScierie = elementGraphique.BoutonScierie()
       self.boutonCaserne = elementGraphique.BoutonCaserne()
+      self.boutonChemin = elementGraphique.BoutonChemin()
       self.boutonRecrutementEpeiste = elementGraphique.BoutonRecrutementEpeiste()
       self.boutonListe.append(self.boutonTour)
       self.boutonListe.append(self.boutonChamp)
@@ -186,6 +187,7 @@ class UserInterface(Canvas):
       self.boutonListe.append(self.boutonMine)
       self.boutonListe.append(self.boutonScierie)
       self.boutonListe.append(self.boutonCaserne)
+      self.boutonListe.append(self.boutonChemin)
       self.boutonListe.append(self.boutonRecrutementEpeiste)
       
    def afficherBouton(self, element):
@@ -210,9 +212,11 @@ class UserInterface(Canvas):
             self.boutonChamp.setIndice(1)
             self.boutonEntrepot.setIndice(2)
             self.boutonCaserne.setIndice(3)
+            self.boutonChemin.setIndice(4)
             self.afficherBouton(self.boutonTour)
             self.afficherBouton(self.boutonChamp)
             self.afficherBouton(self.boutonEntrepot)
+            self.afficherBouton(self.boutonChemin)
             joueurActif = self.fenetre.gameController.getJoueurActif()
             if "militaire" in joueurActif.listAmelioration :
                self.afficherBouton(self.boutonCaserne)
