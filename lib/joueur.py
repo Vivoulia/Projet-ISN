@@ -2,9 +2,14 @@ class Joueur():
     
     def __init__(self, identifiant):
         self.identifiant = identifiant
-        self.nbRessource = 10
-        self.expTechnologie = 0
-        self.expMilitaire = 0
+        self.xp = 0
+        self.nbRessource = 50
         self.villeDepart = None
+        self.listAmelioration =[]
+        self.champs = 0
+        self.mines = 0
+        self.scieries = 0
+        self.chemins = 0
+
     def setVilleDepart(self, ville):
         self.villeDepart = ville

@@ -11,7 +11,14 @@ class GameController():
    def finTour(self):
       print("fin du tour")
       self.etat = "Fin"
-      if self.joueurActif == self.joueur1: 
+      if "technologie" in self.joueurActif.listAmelioration:
+         self.joueurActif.nbRessource += self.joueurActif.champs*15
+      else:
+         self.joueurActif.nbRessource += self.joueurActif.champs*10
+      self.joueurActif.nbRessource += self.joueurActif.mines*20
+      self.joueurActif.nbRessource += self.joueurActif.scieries*30
+      print(self.joueurActif.nbRessource)
+      if self.joueurActif == self.joueur1:
          self.joueurActif = self.joueur2
          print("Au joueur 2 de jouer")
       else:

@@ -1,5 +1,6 @@
 from tkinter import *
 from . import elementGraphique
+from . import joueur
 from random import *
 
 MARGE_Y = 50
@@ -13,14 +14,14 @@ class ZoneAffichage(Canvas):
       Canvas.__init__(self, widgetParent, bg=background, width=width, height=height)
       self.parent = widgetParent
       self.fenetre = fenetre      
-      
+
    def afficherElement(self, element):
       """AFFICHE UN OBJET DE TYPE ELEMENT GRAPHIQUE ENVOYE EN PARAMETRE"""
       tkId = self.create_image(element.x, element.y, image=element.getTexture(), anchor=SW) 
       element.setTkId(tkId)
       self.tag_bind(tkId, '<ButtonPress-1>', self.fenetre.onTuileClick)  
       self.update()
-      
+
    def afficherElementIndex(self, element):
       """AFFICHE UN OBJET DE TYPE ELEMENT GRAPHIQUE EN GERANT L'AFFICHAGE DEVANT/DESSUS"""
       tkId = self.create_image(element.x, element.y, image=element.getTexture(), anchor=SW) 
@@ -30,7 +31,6 @@ class ZoneAffichage(Canvas):
       #il faut verifier si terrain[i][j] existe (A FAIRE)
       self.tag_lower(tkId, self.fenetre.carte.terrain[i][j].terrain.tkId)
       self.update()   
-      
 
 class GameZone(ZoneAffichage):
    
@@ -96,7 +96,7 @@ class GameZone(ZoneAffichage):
 
    def selectTerritoire(self, tuile):
       pass
-   
+
    def selectTerritoireMairie(self, tuile):
       """SELECTIONNE LES TERRITOIRES D'UNE MAIRIE ET AFFICHE A LA FENETRE LA ZONE DE SELECTION"""
       self.deselect()
@@ -106,7 +106,7 @@ class GameZone(ZoneAffichage):
             if iVoisin.getBatiment() == None:
                self.selectedTuile.append(iVoisin)
       self.selectTuile(self.selectedTuile)
-      
+
    def selectTerritoireEntite(self, tuile):
       """SELECTIONNE LES TERRITOIRES Q'UNE ENTITE PEUT PARCOURIR ET AFFICHE A LA FENETRE LA ZONE DE SELECTION"""
       self.deselect()
@@ -114,7 +114,7 @@ class GameZone(ZoneAffichage):
       Q.append(tuile)
       entite = tuile.getEntite()
       self.deselect()
-      
+
       for _ in range(entite[0].pa):
          for iTuile in Q:
             n = Q.pop()
@@ -123,15 +123,15 @@ class GameZone(ZoneAffichage):
                self.selectedTuile.append(iVoisin)
                Q.append(iVoisin)
       self.selectTuile(self.selectedTuile)
-   
+
    def translateToIsoScroll(self, x, y):
       """TRANSLATE DES COORDONNEES X, Y EN COORDS ISOMETRIQUE"""
       sreenX = self.canvasx(x) - 590
-      sreenY  = self.canvasy(y) - 100       
+      sreenY  = self.canvasy(y) - 100
       x = (sreenY / TUILE_Y) + (sreenX/TUILE_X)
       y = (sreenY / TUILE_Y) - (sreenX/TUILE_X)
       return round(x), round(y)+1
-   
+
    def translateToIso(self, x, y):
       """TRANSLATE DES COORDONNEES X, Y EN COORDS ISOMETRIQUE"""
       sreenX = x - 590 
@@ -213,7 +213,9 @@ class UserInterface(Canvas):
             self.afficherBouton(self.boutonTour)
             self.afficherBouton(self.boutonChamp)
             self.afficherBouton(self.boutonEntrepot)
-            self.afficherBouton(self.boutonCaserne)
+            joueurActif = self.fenetre.gameController.getJoueurActif()
+            if "militaire" in joueurActif.listAmelioration :
+               self.afficherBouton(self.boutonCaserne)
       else:
          if tuile.getBatiment().getNom() == "Caserne":
             self.boutonRecrutementEpeiste.setIndice(0)
@@ -338,12 +340,12 @@ class Fenetre():
          #Il y a des entités sur la tuile
          entite = self.carte.terrain[x][y].getEntite()
          self.gameZone.selectTerritoireEntite(self.carte.terrain[x][y])
-         print(entite[0].pa)         
+         print(entite[0].pa)
          pass
       
       elif self.carte.terrain[x][y].getBatiment() != None:
          #Il y a un batiment sur la tuile
-         if self.gameController.getJoueurActif() == self.carte.terrain[x][y].getBatiment().camp:
+         if self.gameController.getJoueurActif() == self.carte.terrain[x][y].getBatiment().joueur:
             if self.carte.terrain[x][y].getBatiment().getNom() == "Mairie Ressource":
                #si le batiment est une mairie
                self.gameZone.currentCity = self.carte.terrain[x][y]
@@ -380,6 +382,10 @@ class Fenetre():
             print (self.arbreCompetence.unlockedList)
             print (iAmelioration.effet)
             #Debloquer les ameliorations suivantes
+            upgrade = iAmelioration.effet
+            joueurActif = self.gameController.getJoueurActif()
+            joueurActif.listAmelioration.append(upgrade)
+            print(joueurActif.listAmelioration)
       self.gameZone.update()
    
    def onBoutonClique(self, event):
@@ -395,23 +401,7 @@ class Fenetre():
                self.gameZone.afficherElementIndex(element)
             self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
             self.gameZone.selectTerritoire(self.gameZone.currentCity)
-            self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)            
-   
-   def onArbreClick(self, event):
-      """ PASCAL A FAIRE ARBRE DES COMPETENCES """
-      item = event.widget.find_closest(event.x, event.y)
-      for iAmelioration in self.arbreCompetence.availableList:
-         if iAmelioration.tkId == item[0]:
-            self.arbreCompetence.unlockedList.append(iAmelioration)
-            x = iAmelioration.x
-            y = iAmelioration.y
-            self.arbreCompetence.cadre = elementGraphique.Cadre(x, y, ArbreCompetence)
-            self.arbreCompetence.unlockedList.append(self.arbreCompetence.cadre)
-            self.arbreCompetence.afficherElement(self.arbreCompetence.cadre)            
-            print (self.arbreCompetence.unlockedList)
-            print (iAmelioration.effet)
-            
-   
+            self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
 
    def onKeyPress(self, event):
       """METHODE APPELE QUAND UNE TOUCHE DU CLAVIER EST ENFONCE"""
@@ -439,4 +429,4 @@ class Fenetre():
       elif event.delta<0:
          self.userInterface.yview_scroll(1,"unit")
       elif event.delta>0:
-         self.userInterface.yview_scroll(-1,"unit")   
+         self.userInterface.yview_scroll(-1,"unit")  
