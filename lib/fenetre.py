@@ -180,6 +180,7 @@ class UserInterface(Canvas):
       self.boutonScierie = elementGraphique.BoutonScierie()
       self.boutonCaserne = elementGraphique.BoutonCaserne()
       self.boutonChemin = elementGraphique.BoutonChemin()
+      self.boutonOuvrier = elementGraphique.BoutonOuvrier()
       self.boutonRecrutementEpeiste = elementGraphique.BoutonRecrutementEpeiste()
       self.boutonListe.append(self.boutonTour)
       self.boutonListe.append(self.boutonChamp)
@@ -189,6 +190,7 @@ class UserInterface(Canvas):
       self.boutonListe.append(self.boutonCaserne)
       self.boutonListe.append(self.boutonChemin)
       self.boutonListe.append(self.boutonRecrutementEpeiste)
+      self.boutonListe.append(self.boutonOuvrier)
       
    def afficherBouton(self, element):
       """AFFICHE UN OBJET DE TYPE ELEMENT GRAPHIQUE ENVOYE EN PARAMETRE"""
@@ -198,8 +200,12 @@ class UserInterface(Canvas):
       element.setTkIdText(tkIdText)
       self.tag_bind(tkId, '<ButtonPress-1>', self.fenetre.onBoutonClique)  
       self.update()
-      
-   def affichageBouton(self, tuile):
+   
+   def affichegeBoutonMairie(self, tuile):
+      self.boutonOuvrier.setIndice(0)
+      self.afficherBouton(self.boutonOuvrier)  
+   
+   def affichageBoutonChantier(self, tuile):
       if tuile.getBatiment() == None:
          if tuile.getTerrain().getNom() == "Foret":
             self.boutonScierie.setIndice(0)
@@ -211,8 +217,8 @@ class UserInterface(Canvas):
             self.boutonTour.setIndice(0)
             self.boutonChamp.setIndice(1)
             self.boutonEntrepot.setIndice(2)
-            self.boutonCaserne.setIndice(3)
-            self.boutonChemin.setIndice(4)
+            self.boutonChemin.setIndice(3)
+            self.boutonCaserne.setIndice(4)
             self.afficherBouton(self.boutonTour)
             self.afficherBouton(self.boutonChamp)
             self.afficherBouton(self.boutonEntrepot)
@@ -235,7 +241,7 @@ class UserInterface(Canvas):
       for iBouton in self.boutonListe:
          self.delete(iBouton.tkId)
          self.delete(iBouton.tkIdText)
-   
+
 class ArbreCompetence(Canvas):
   
    def __init__(self, widgetParent, fenetre, background, width, height):
@@ -352,12 +358,13 @@ class Fenetre():
          if self.gameController.getJoueurActif() == self.carte.terrain[x][y].getBatiment().joueur:
             if self.carte.terrain[x][y].getBatiment().getNom() == "Mairie Ressource":
                #si le batiment est une mairie
+               self.userInterface.affichegeBoutonMairie(self.carte.terrain[x][y])
                self.gameZone.currentCity = self.carte.terrain[x][y]
                #on met en selection les zones constructibles
                self.gameZone.selectTerritoireMairie(self.carte.terrain[x][y])
             else:
                self.userInterface.clear()
-               self.userInterface.affichageBouton(self.carte.terrain[x][y])
+               self.userInterface.affichageBoutonChantier
          else:
             pass
             
@@ -367,7 +374,7 @@ class Fenetre():
          if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
             #Affichage des boutons 
             self.userInterface.clear()
-            self.userInterface.affichageBouton(self.carte.terrain[x][y])
+            self.userInterface.affichageBoutonChantier(self.carte.terrain[x][y])
          elif len(self.gameZone.selectedTkId) != 0:
             self.gameZone.deselect()
             self.userInterface.clear()

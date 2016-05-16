@@ -10,6 +10,8 @@ class Joueur():
         self.mines = 0
         self.scieries = 0
         self.chemins = 0
+        self.coutChemins = 10
+        nbOuvriers = 1
 
     def setVilleDepart(self, ville):
         self.villeDepart = ville

@@ -11,6 +11,7 @@ class GameController():
    def finTour(self):
       print("fin du tour")
       self.etat = "Fin"
+      self.joueurActif.nbRessource += 30
       if "technologie" in self.joueurActif.listAmelioration:
          self.joueurActif.nbRessource += self.joueurActif.champs*15
       else:

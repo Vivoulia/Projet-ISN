@@ -46,9 +46,9 @@ class Carte():
                self.fenetre.gameZone.afficherElement(self.terrain[i][j].decor[len(self.terrain[i][j].decor)-1])   
             #self.fenetre.can.update()
       #On définit les deux villes de depart et on les assignent au joueur:
-      self.terrain[1][1].addBatimentMairieRessource(self.joueur1)
-      self.joueur1.setVilleDepart(self.terrain[1][1].getBatiment())
-      self.fenetre.gameZone.afficherElementIndex(self.terrain[1][1].getBatiment())
+      self.terrain[4][4].addBatimentMairieRessource(self.joueur1)
+      self.joueur1.setVilleDepart(self.terrain[4][4].getBatiment())
+      self.fenetre.gameZone.afficherElementIndex(self.terrain[4][4].getBatiment())
       
       self.terrain[20][20].addBatimentMairieRessource(self.joueur2)
       self.joueur2.setVilleDepart(self.terrain[20][20].getBatiment())  
