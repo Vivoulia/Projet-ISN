@@ -107,14 +107,9 @@ class GameZone(ZoneAffichage):
          for iVoisin in territoireVoisin:
             if iVoisin.getBatiment() == None:
                self.selectedTuile.append(iVoisin)
-<<<<<<< HEAD
-      self.selectTuile(self.selectedTuile)
-
-=======
       self.selectTuile(self.selectedTuile, "case selection.gif")
       self.selectionType = "Batiment"
       
->>>>>>> refs/remotes/origin/Deplacement-Soldat
    def selectTerritoireEntite(self, tuile):
       """SELECTIONNE LES TERRITOIRES Q'UNE ENTITE PEUT PARCOURIR ET AFFICHE A LA FENETRE LA ZONE DE SELECTION"""
       self.deselect()
@@ -122,18 +117,6 @@ class GameZone(ZoneAffichage):
       Q.put(tuile)
       entite = tuile.getEntite()
       self.deselect()
-<<<<<<< HEAD
-
-      for _ in range(entite[0].pa):
-         for iTuile in Q:
-            n = Q.pop()
-            voisin = self.getVoisin(n)
-            for iVoisin in voisin:
-               self.selectedTuile.append(iVoisin)
-               Q.append(iVoisin)
-      self.selectTuile(self.selectedTuile)
-
-=======
       i = 0
       closed = list()
       closed.append(tuile)
@@ -153,21 +136,15 @@ class GameZone(ZoneAffichage):
       self.selectionType = "Entite"
       print("nbTuileParcouru :", i)
 
-   
->>>>>>> refs/remotes/origin/Deplacement-Soldat
    def translateToIsoScroll(self, x, y):
       """TRANSLATE DES COORDONNEES X, Y EN COORDS ISOMETRIQUE"""
       sreenX = self.canvasx(x) - 590
       sreenY  = self.canvasy(y) - 100
       x = (sreenY / TUILE_Y) + (sreenX/TUILE_X)
       y = (sreenY / TUILE_Y) - (sreenX/TUILE_X)
-<<<<<<< HEAD
-      return round(x), round(y)+1
-
-=======
       return round(x), round(y)
    
->>>>>>> refs/remotes/origin/Deplacement-Soldat
+   
    def translateToIso(self, x, y):
       """TRANSLATE DES COORDONNEES X, Y EN COORDS ISOMETRIQUE"""
       sreenX = x - 590 
@@ -278,14 +255,18 @@ class UserInterface(Canvas):
             self.boutonTour.setIndice(0)
             self.boutonChamp.setIndice(1)
             self.boutonEntrepot.setIndice(2)
-            self.boutonCaserne.setIndice(3)
-            self.boutonChemin.setIndice(4)
+            if "militaire" in self.fenetre.gameController.getJoueurActif().listAmelioration :        
+               self.boutonCaserne.setIndice(3)
+               self.boutonChemin.setIndice(4)
+            else:
+               self.boutonChemin.setIndice(3)
+               self.boutonCaserne.setIndice(4)
+               self.afficherBouton(self.boutonCaserne)
             self.afficherBouton(self.boutonTour)
             self.afficherBouton(self.boutonChamp)
             self.afficherBouton(self.boutonEntrepot)
             self.afficherBouton(self.boutonChemin)
-            joueurActif = self.fenetre.gameController.getJoueurActif()
-            if "militaire" in joueurActif.listAmelioration :
+            if "militaire" in self.fenetre.gameController.getJoueurActif().listAmelioration :
                self.afficherBouton(self.boutonCaserne)
       else:
          if tuile.getBatiment().getNom() == "Caserne":
@@ -412,13 +393,7 @@ class Fenetre():
          #Il y a des entités sur la tuile
          entite = self.carte.terrain[x][y].getEntite()
          self.gameZone.selectTerritoireEntite(self.carte.terrain[x][y])
-<<<<<<< HEAD
-         print(entite[0].pa)
-=======
          self.gameZone.currentEntite = entite[0]
-         print(entite[0].pa)         
->>>>>>> refs/remotes/origin/Deplacement-Soldat
-         pass
       
       elif self.carte.terrain[x][y].getBatiment() != None:
          #Il y a un batiment sur la tuile
@@ -486,10 +461,6 @@ class Fenetre():
             if element != None:
                self.gameZone.afficherElementIndex(element)
             self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
-            self.gameZone.selectTerritoire(self.gameZone.currentCity)
-<<<<<<< HEAD
-            self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
-=======
             self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)            
    
    def onArbreClick(self, event):
@@ -505,9 +476,6 @@ class Fenetre():
             self.arbreCompetence.afficherElement(self.arbreCompetence.cadre)            
             print (self.arbreCompetence.unlockedList)
             print (iAmelioration.effet)
-            
-   
->>>>>>> refs/remotes/origin/Deplacement-Soldat
 
    def onKeyPress(self, event):
       """METHODE APPELE QUAND UNE TOUCHE DU CLAVIER EST ENFONCE"""
