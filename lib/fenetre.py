@@ -46,8 +46,6 @@ class GameZone(ZoneAffichage):
       self.selectedTkId = list() #List contenant les TkId selectionné par un clique 
       self.selectionType = "None"
       
-      
-      
    def afficherElement(self, element):
       """AFFICHE UN OBJET DE TYPE ELEMENT GRAPHIQUE ENVOYE EN PARAMETRE"""
       tkId = self.create_image(element.x, element.y, image=element.getTexture(), anchor=SW) 
@@ -121,19 +119,22 @@ class GameZone(ZoneAffichage):
       self.deselect()
       i = 0
       closed = list()
-      closed.append(entite[0])
-      
+      closed.append(tuile)
+      print("nb Tuile a parcourir:", entite[0].pa*(2*(entite[0].pa + 1)))
       while not(Q.empty()) and i <= entite[0].pa*(2*(entite[0].pa + 1)):
          n = Q.get()
-         territoireVoisin = self.getVoisin(n)
+         territoireVoisin, nbVoisin = self.getVoisinComptage(n)
+         print("On incremente i de : ", nbVoisin)
+         i += nbVoisin
          for iVoisin in territoireVoisin:
             if not(iVoisin in closed):
                Q.put(iVoisin)
                self.selectedTuile.append(iVoisin)
                closed.append(iVoisin)
-               i+=1
+               i += 1
       self.selectTuile(self.selectedTuile, "case selection entite.gif")
       self.selectionType = "Entite"
+      print("nbTuileParcouru :", i)
 
    
    def translateToIsoScroll(self, x, y):
@@ -164,6 +165,22 @@ class GameZone(ZoneAffichage):
                voisin.append(self.fenetre.carte.terrain[tuile.i][tuile.j+i])
       return voisin
    
+   def getVoisinComptage(self, tuile):
+      """RENVOIE LES VOISINS D'UNE TUILE EN COMPTANT LES VOISINS THEORIQUENT"""
+      voisin = list()
+      colonne = self.fenetre.carte.getNbColonne()
+      ligne = self.fenetre.carte.getNbLigne()
+      nbVoisin = 0
+      for i in range(-1, 2, 1):
+         if i != 0:
+            if (tuile.i+i <= ligne and tuile.i+i >= 0) and (tuile.j+i <= colonne and tuile.j+i >= 0):
+               voisin.append(self.fenetre.carte.terrain[tuile.i+i][tuile.j])
+               voisin.append(self.fenetre.carte.terrain[tuile.i][tuile.j+i])
+            else:
+               nbVoisin += 2
+               print("on passe ici")
+      return voisin, nbVoisin
+   
    def moveUnitTo(self, tuile):
       self.coords(self.currentEntite.tkId, tuile.x, tuile.y)
       i, j = self.translateToIso(tuile.x, tuile.y)
@@ -172,6 +189,12 @@ class GameZone(ZoneAffichage):
       self.currentEntite.parent.removeEntite(self.currentEntite)
       tuile.addEntite(self.currentEntite)
       self.currentEntite.parent = tuile
+      
+   def tuileExiste(self, tuile):
+      if (tuile.i < ligne and tuile.i > 0) and (tuile.j < colonne and tuile.j > 0):
+         return True
+      else:
+         return False
    
 
 class UserInterface(Canvas):
