@@ -67,6 +67,10 @@ class GameZone(ZoneAffichage):
       self.photo = PhotoImage(file = fileName)
       for iTuile in range(len(selection)):
          i, j = self.translateToIso(selection[iTuile].x, selection[iTuile].y)
+<<<<<<< HEAD
+=======
+         print("i :",i, "j :", j )
+>>>>>>> origin/master
          tkId = self.create_image(selection[iTuile].x, selection[iTuile].y, image=self.photo,  anchor=SW)
          self.tag_bind(tkId, '<ButtonPress-1>', self.fenetre.onTuileClick)
          if selection[iTuile].getBatiment() != None:
@@ -77,7 +81,7 @@ class GameZone(ZoneAffichage):
          else:
             self.tag_lower(tkId, self.fenetre.carte.terrain[i][j].getTerrain().tkId)
          self.selectedTkId.append(tkId)
-      self.update()
+         self.update()
    
    def deselect(self):
       """DESAFFICHE ET DESELECTIONNE LES TUILES SELECTIONNE"""
@@ -110,6 +114,7 @@ class GameZone(ZoneAffichage):
    def selectTerritoireEntite(self, tuile):
       """SELECTIONNE LES TERRITOIRES Q'UNE ENTITE PEUT PARCOURIR ET AFFICHE A LA FENETRE LA ZONE DE SELECTION"""
       self.deselect()
+<<<<<<< HEAD
       Q = list()
       Q.append(tuile)
       entite = tuile.getEntite()
@@ -123,6 +128,32 @@ class GameZone(ZoneAffichage):
                self.selectedTuile.append(iVoisin)
                Q.append(iVoisin)
       self.selectTuile(self.selectedTuile)
+=======
+      entite = tuile.getEntite()
+      if entite[0].canMoove():
+         Q = Queue()
+         Q.put(tuile)
+         i = 0
+         closed = list()
+         closed.append(tuile)
+         print("nb Tuile a parcourir:", entite[0].pa*(2*(entite[0].pa + 1)))
+         while not(Q.empty()) and i < entite[0].pa*(2*(entite[0].pa + 1)):
+            n = Q.get()
+            territoireVoisin, nbVoisin = self.getVoisinComptage(n)
+            print("On incremente i de : ", nbVoisin)
+            i += nbVoisin
+            for iVoisin in territoireVoisin:
+               if not(iVoisin in closed):
+                  Q.put(iVoisin)
+                  self.selectedTuile.append(iVoisin)
+                  closed.append(iVoisin)
+                  #i += 1
+               else:
+                  i-=1
+         self.selectTuile(self.selectedTuile, "case selection entite.gif")
+         self.selectionType = "Entite"
+         print("nbTuileParcouru :", i)
+>>>>>>> origin/master
 
    def translateToIsoScroll(self, x, y):
       """TRANSLATE DES COORDONNEES X, Y EN COORDS ISOMETRIQUE"""
@@ -152,6 +183,42 @@ class GameZone(ZoneAffichage):
                voisin.append(self.fenetre.carte.terrain[tuile.i][tuile.j+i])
       return voisin
    
+<<<<<<< HEAD
+=======
+   def getVoisinComptage(self, tuile):
+      """RENVOIE LES VOISINS D'UNE TUILE EN COMPTANT LES VOISINS THEORIQUENT"""
+      voisin = list()
+      colonne = self.fenetre.carte.getNbColonne()
+      ligne = self.fenetre.carte.getNbLigne()
+      nbVoisin = 0
+      for i in range(-1, 2, 1):
+         if i != 0:
+            if (tuile.i+i < ligne and tuile.i+i >= 0) and (tuile.j+i < colonne and tuile.j+i >= 0):
+               voisin.append(self.fenetre.carte.terrain[tuile.i+i][tuile.j])
+               voisin.append(self.fenetre.carte.terrain[tuile.i][tuile.j+i])
+               nbVoisin += 2
+            else:
+               nbVoisin += 2
+               print("on passe ici")
+      return voisin, nbVoisin
+   
+   def moveUnitTo(self, tuile):
+      self.coords(self.currentEntite.tkId, tuile.x, tuile.y)
+      i, j = self.translateToIso(tuile.x, tuile.y)
+      self.tag_lower(self.currentEntite.tkId, self.fenetre.carte.terrain[i][j].terrain.tkId)
+      self.update()
+      self.currentEntite.parent.removeEntite(self.currentEntite)
+      tuile.addEntite(self.currentEntite)
+      self.currentEntite.parent = tuile
+      self.currentEntite.setMoove(False)
+      
+   def tuileExiste(self, tuile):
+      if (tuile.i < ligne and tuile.i > 0) and (tuile.j < colonne and tuile.j > 0):
+         return True
+      else:
+         return False
+   
+>>>>>>> origin/master
 
 class UserInterface(Canvas):
    def __init__(self, widgetParent, fenetre, background, width, height):
@@ -217,8 +284,18 @@ class UserInterface(Canvas):
             self.boutonTour.setIndice(0)
             self.boutonChamp.setIndice(1)
             self.boutonEntrepot.setIndice(2)
+<<<<<<< HEAD
             self.boutonChemin.setIndice(3)
             self.boutonCaserne.setIndice(4)
+=======
+            if "militaire" in self.fenetre.gameController.getJoueurActif().listAmelioration :
+               self.boutonCaserne.setIndice(3)
+               self.boutonChemin.setIndice(4)
+            else:
+               self.boutonChemin.setIndice(3)
+               self.boutonCaserne.setIndice(4)
+               self.afficherBouton(self.boutonCaserne)
+>>>>>>> origin/master
             self.afficherBouton(self.boutonTour)
             self.afficherBouton(self.boutonChamp)
             self.afficherBouton(self.boutonEntrepot)
@@ -229,7 +306,7 @@ class UserInterface(Canvas):
       else:
          if tuile.getBatiment().getNom() == "Caserne":
             self.boutonRecrutementEpeiste.setIndice(0)
-            self.afficherBouton(self.boutonRecrutementEpeiste)           
+            self.afficherBouton(self.boutonRecrutementEpeiste)
          pass
       
    
