@@ -17,7 +17,6 @@ class Game():
       self.fenetre.setGameController(self.gameController)
       self.carte.setFenetre(self.fenetre)
       self.carte.setJoueur(self.joueur1, self.joueur2)
-
       #self.sonManager = son.SonManager()
       #self.sonManager.playSonFond()
 
