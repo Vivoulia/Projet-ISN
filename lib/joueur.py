@@ -10,6 +10,10 @@ class Joueur():
         self.mines = 0
         self.scieries = 0
         self.chemins = 0
+        self.entiteAReset = list()
 
     def setVilleDepart(self, ville):
         self.villeDepart = ville
+        
+    def addEntiteReset(self, entite):
+        self.entiteAReset.append(entite)

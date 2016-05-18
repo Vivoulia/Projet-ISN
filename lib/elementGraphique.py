@@ -72,7 +72,20 @@ class Entite(ElementJouable):
       self.bonusTerrain = 0
       self.typeDegat = 0
       self.level = 0
-
+      self.moove = True
+      self.canAttack = True
+      
+   def canMoove(self):
+      return self.moove
+   
+   def setMoove(self, canMoove):
+      if canMoove:
+         self.moove = True
+      else:
+         self.moove = False
+         self.joueur.addEntiteReset(self)
+         
+      
 class Epeiste(Entite):
    def __init__(self, x, y, joueur, parent, textureName = "epeiste.gif", textureDesc="testTuile2D.gif"):
       Entite.__init__(self,x, y, joueur, parent, textureName, textureDesc)
@@ -194,6 +207,13 @@ class Decor(ElementJouable):
 class Foret(Decor):
    def __init__(self, x, y, parent):
       Decor.__init__(self, x, y, parent,  "foret.gif", "testTuile2D.gif")
+      
+class CaseSelectionConstruction(ElementGraphique):
+   def __init__(self, x, y, parent, textureName, textureDesc="case selection.gif" , cheminTexture = "texture/"):
+      ElementGraphique.__init__(self, x, y, parent, textureName, cheminTexture)
+   
+      
+   
 """
 class Chemin(Decor):
    def __init__(self, x, y, parent):

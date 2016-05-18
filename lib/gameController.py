@@ -24,6 +24,8 @@ class GameController():
       else:
          self.joueurActif = self.joueur1
          print("Au joueur 1 de jouer")
+      for iEntite in self.joueurActif.entiteAReset:
+         iEntite.setMoove(True)
       self.etat = "En jeu"
    
    def setJoueur(self, joueur1, joueur2):
