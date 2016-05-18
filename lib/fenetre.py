@@ -69,6 +69,7 @@ class GameZone(ZoneAffichage):
       self.photo = PhotoImage(file = fileName)
       for iTuile in range(len(selection)):
          i, j = self.translateToIsoScroll(selection[iTuile].x, selection[iTuile].y)
+         print("i :",i, "j :", j )
          tkId = self.create_image(selection[iTuile].x, selection[iTuile].y, image=self.photo,  anchor=SW)
          self.tag_bind(tkId, '<ButtonPress-1>', self.fenetre.onTuileClick)
          if self.fenetre.carte.terrain[i][j].getBatiment() != None:
@@ -116,12 +117,11 @@ class GameZone(ZoneAffichage):
       Q = Queue()
       Q.put(tuile)
       entite = tuile.getEntite()
-      self.deselect()
       i = 0
       closed = list()
       closed.append(tuile)
       print("nb Tuile a parcourir:", entite[0].pa*(2*(entite[0].pa + 1)))
-      while not(Q.empty()) and i <= entite[0].pa*(2*(entite[0].pa + 1)):
+      while not(Q.empty()) and i < entite[0].pa*(2*(entite[0].pa + 1)):
          n = Q.get()
          territoireVoisin, nbVoisin = self.getVoisinComptage(n)
          print("On incremente i de : ", nbVoisin)
@@ -151,7 +151,7 @@ class GameZone(ZoneAffichage):
       sreenY  = y - 100         
       x = (sreenY / TUILE_Y) + (sreenX/TUILE_X)
       y = (sreenY / TUILE_Y) - (sreenX/TUILE_X)
-      return round(x), round(y)+1
+      return round(x), round(y)
       
    def getVoisin(self, tuile):
       """RENVOIE LES VOISINS D'UNE TUILE"""
@@ -386,7 +386,7 @@ class Fenetre():
    
    def onTuileClick(self, event):
       x, y = self.gameZone.translateToIsoScroll(event.x, event.y)
-      print(x, y, self.carte.terrain[x][y].i, self.carte.terrain[x][y].j)
+      print(self.carte.terrain[x][y].i, self.carte.terrain[x][y].j)
       self.userInterface.clear()
       self.gameZone.currentTuile = self.carte.terrain[x][y]
       if len(self.carte.terrain[x][y].getEntite()) > 0  :
