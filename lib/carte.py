@@ -23,8 +23,8 @@ class Carte():
       texture = ""
       for i in range(LIGNE):
          for j in range(COLONNE):
-            x = 590 + (i - j) * (TUILE_X/2)
-            y = 100 + (i + j) * (TUILE_Y/2)
+            x = 590 + (i - (j+1)) * (TUILE_X/2)
+            y = 100 + (i + (j+1)) * (TUILE_Y/2)
             self.terrain[i][j] = tuile.Tuile(x, y, i ,j)
             if i==0 or j==0 or i==LIGNE-1 or j==COLONNE-1 or i + j > COLONNE+15  or i + j < COLONNE-20:
                self.terrain[i][j].setTerrainVide()

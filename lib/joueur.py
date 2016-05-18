@@ -12,6 +12,10 @@ class Joueur():
         self.chemins = 0
         self.coutChemins = 10
         self.nbOuvrier = 1
+        self.entiteAReset = list()
 
     def setVilleDepart(self, ville):
         self.villeDepart = ville
+        
+    def addEntiteReset(self, entite):
+        self.entiteAReset.append(entite)    
