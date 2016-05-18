@@ -23,7 +23,7 @@ class Tuile():
    def setTerrainPlaine(self):
       self.terrain = elementGraphique.TerrainPlaine(self.x, self.y, self)
       return self.terrain
-      
+
    def setTerrainMontagne(self):
       self.terrain = elementGraphique.TerrainMontagne(self.x, self.y, self)
       return self.terrain
@@ -37,8 +37,8 @@ class Tuile():
       return self.batiment
    
    def addBatimentChemin(self, camp):
-         self.batiment = elementGraphique.Chemin(self.x, self.y, camp, self)
-         return self.batiment   
+      self.batiment = elementGraphique.Chemin(self.x, self.y, camp, self)
+      return self.batiment   
 
    def addBatimentChamp(self, camp):
       self.batiment = elementGraphique.Champ(self.x, self.y, camp, self)
@@ -55,19 +55,19 @@ class Tuile():
    def addBatimentMine(self, camp):
       self.batiment = elementGraphique.Mine(self.x, self.y, camp, self)
       return self.batiment
-      
+
    def addBatimentEntrepot(self, camp):
       self.batiment = elementGraphique.Entrepot(self.x, self.y, camp, self)
       return self.batiment
-      
+
    def addBatimentTour(self, camp):
       self.batiment = elementGraphique.Tour(self.x, self.y, camp, self)
       return self.batiment
-      
+
    def addBatimentTourMage(self, camp):
       self.batiment = elementGraphique.TourMage(self.x, self.y, camp, self)
       return self.batiment
-      
+
    def addBatimentForge(self, camp):
       self.batiment = elementGraphique.Forge(self.x, self.y, camp, self)
       return self.batiment

@@ -7,7 +7,7 @@ class GameController():
       self.etat = None
       self.joueurActif = None
       self.joueur1 = None
-      self.joueur2 = None   
+      self.joueur2 = None
    def finTour(self):
       print("fin du tour")
       self.etat = "Fin"
