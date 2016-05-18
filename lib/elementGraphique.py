@@ -205,7 +205,7 @@ class Chemin(Decor):
 class Bouton(ElementGraphique):
    def __init__(self, textureName, cheminTexture = "texture/GUI/"):
       parent = None #a supprimers
-      self.x = 20
+      self.x = 30
       self.y = 350
       self.indice = 0
       ElementGraphique.__init__(self, self.x, self.y, parent, textureName, cheminTexture)

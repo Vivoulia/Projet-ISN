@@ -2,6 +2,7 @@ from tkinter import *
 from . import elementGraphique
 from . import joueur
 from random import *
+from queue import Queue
 
 MARGE_Y = 50
 MARGE_X = 10 
@@ -40,9 +41,10 @@ class GameZone(ZoneAffichage):
       self.fenetre = fenetre
       self.currentCity = None
       self.currentTuile = None
+      self.currentEntite = None
       self.selectedTuile = list() #List contenant les tuiles selectionné par un clique
       self.selectedTkId = list() #List contenant les TkId selectionné par un clique 
-      
+      self.selectionType = "None"
       
    def afficherElement(self, element):
       """AFFICHE UN OBJET DE TYPE ELEMENT GRAPHIQUE ENVOYE EN PARAMETRE"""
@@ -61,18 +63,18 @@ class GameZone(ZoneAffichage):
       self.tag_lower(tkId, self.fenetre.carte.terrain[i][j].terrain.tkId)
       self.update()
    
-   def selectTuile(self, selection):
+   def selectTuile(self, selection, texture):
       """AFFICHE LES TUILES ENVOYE DANS UNE LIST EN PARAMETRE"""
-      fileName="texture/case selection.gif"
+      fileName="texture/" + texture
       self.photo = PhotoImage(file = fileName)
       for iTuile in range(len(selection)):
-         i, j = self.translateToIso(selection[iTuile].x, selection[iTuile].y)
+         i, j = self.translateToIsoScroll(selection[iTuile].x, selection[iTuile].y)
          tkId = self.create_image(selection[iTuile].x, selection[iTuile].y, image=self.photo,  anchor=SW)
          self.tag_bind(tkId, '<ButtonPress-1>', self.fenetre.onTuileClick)
-         if selection[iTuile].getBatiment() != None:
+         if self.fenetre.carte.terrain[i][j].getBatiment() != None:
             self.tag_lower(tkId, self.fenetre.carte.terrain[i][j].getBatiment().tkId)
-         elif len(selection[iTuile].getDecor()) != 0:
-            decor = selection[iTuile].getDecor()
+         elif len(self.fenetre.carte.terrain[i][j].getDecor()) != 0:
+            decor = self.fenetre.carte.terrain[i][j].getDecor()
             self.tag_lower(tkId, decor[0].tkId)
          else:
             self.tag_lower(tkId, self.fenetre.carte.terrain[i][j].getTerrain().tkId)
@@ -105,15 +107,22 @@ class GameZone(ZoneAffichage):
          for iVoisin in territoireVoisin:
             if iVoisin.getBatiment() == None:
                self.selectedTuile.append(iVoisin)
+<<<<<<< HEAD
       self.selectTuile(self.selectedTuile)
 
+=======
+      self.selectTuile(self.selectedTuile, "case selection.gif")
+      self.selectionType = "Batiment"
+      
+>>>>>>> refs/remotes/origin/Deplacement-Soldat
    def selectTerritoireEntite(self, tuile):
       """SELECTIONNE LES TERRITOIRES Q'UNE ENTITE PEUT PARCOURIR ET AFFICHE A LA FENETRE LA ZONE DE SELECTION"""
       self.deselect()
-      Q = list()
-      Q.append(tuile)
+      Q = Queue()
+      Q.put(tuile)
       entite = tuile.getEntite()
       self.deselect()
+<<<<<<< HEAD
 
       for _ in range(entite[0].pa):
          for iTuile in Q:
@@ -124,21 +133,48 @@ class GameZone(ZoneAffichage):
                Q.append(iVoisin)
       self.selectTuile(self.selectedTuile)
 
+=======
+      i = 0
+      closed = list()
+      closed.append(tuile)
+      print("nb Tuile a parcourir:", entite[0].pa*(2*(entite[0].pa + 1)))
+      while not(Q.empty()) and i <= entite[0].pa*(2*(entite[0].pa + 1)):
+         n = Q.get()
+         territoireVoisin, nbVoisin = self.getVoisinComptage(n)
+         print("On incremente i de : ", nbVoisin)
+         i += nbVoisin
+         for iVoisin in territoireVoisin:
+            if not(iVoisin in closed):
+               Q.put(iVoisin)
+               self.selectedTuile.append(iVoisin)
+               closed.append(iVoisin)
+               i += 1
+      self.selectTuile(self.selectedTuile, "case selection entite.gif")
+      self.selectionType = "Entite"
+      print("nbTuileParcouru :", i)
+
+   
+>>>>>>> refs/remotes/origin/Deplacement-Soldat
    def translateToIsoScroll(self, x, y):
       """TRANSLATE DES COORDONNEES X, Y EN COORDS ISOMETRIQUE"""
       sreenX = self.canvasx(x) - 590
       sreenY  = self.canvasy(y) - 100
       x = (sreenY / TUILE_Y) + (sreenX/TUILE_X)
       y = (sreenY / TUILE_Y) - (sreenX/TUILE_X)
+<<<<<<< HEAD
       return round(x), round(y)+1
 
+=======
+      return round(x), round(y)
+   
+>>>>>>> refs/remotes/origin/Deplacement-Soldat
    def translateToIso(self, x, y):
       """TRANSLATE DES COORDONNEES X, Y EN COORDS ISOMETRIQUE"""
       sreenX = x - 590 
       sreenY  = y - 100         
       x = (sreenY / TUILE_Y) + (sreenX/TUILE_X)
       y = (sreenY / TUILE_Y) - (sreenX/TUILE_X)
-      return round(x), round(y)+1  
+      return round(x), round(y)+1
       
    def getVoisin(self, tuile):
       """RENVOIE LES VOISINS D'UNE TUILE"""
@@ -151,6 +187,37 @@ class GameZone(ZoneAffichage):
                voisin.append(self.fenetre.carte.terrain[tuile.i+i][tuile.j])
                voisin.append(self.fenetre.carte.terrain[tuile.i][tuile.j+i])
       return voisin
+   
+   def getVoisinComptage(self, tuile):
+      """RENVOIE LES VOISINS D'UNE TUILE EN COMPTANT LES VOISINS THEORIQUENT"""
+      voisin = list()
+      colonne = self.fenetre.carte.getNbColonne()
+      ligne = self.fenetre.carte.getNbLigne()
+      nbVoisin = 0
+      for i in range(-1, 2, 1):
+         if i != 0:
+            if (tuile.i+i <= ligne and tuile.i+i >= 0) and (tuile.j+i <= colonne and tuile.j+i >= 0):
+               voisin.append(self.fenetre.carte.terrain[tuile.i+i][tuile.j])
+               voisin.append(self.fenetre.carte.terrain[tuile.i][tuile.j+i])
+            else:
+               nbVoisin += 2
+               print("on passe ici")
+      return voisin, nbVoisin
+   
+   def moveUnitTo(self, tuile):
+      self.coords(self.currentEntite.tkId, tuile.x, tuile.y)
+      i, j = self.translateToIso(tuile.x, tuile.y)
+      self.tag_lower(self.currentEntite.tkId, self.fenetre.carte.terrain[i][j].terrain.tkId)
+      self.update()
+      self.currentEntite.parent.removeEntite(self.currentEntite)
+      tuile.addEntite(self.currentEntite)
+      self.currentEntite.parent = tuile
+      
+   def tuileExiste(self, tuile):
+      if (tuile.i < ligne and tuile.i > 0) and (tuile.j < colonne and tuile.j > 0):
+         return True
+      else:
+         return False
    
 
 class UserInterface(Canvas):
@@ -303,9 +370,9 @@ class Fenetre():
       """CREATION DE LA ZONE RESSOURCE"""
       
       self.zone_ressource = Frame(self.windows)
-      self.ressourceInterFace = RessourceInterFace(self.zone_ressource, self, "red", width=TUILE_X*9+MARGE_X, height=60)
+      self.ressourceInterFace = RessourceInterFace(self.zone_ressource, self, "red", width=width//4, height=height//4)
       self.ressourceInterFace.grid(column=0, row=0)
-      self.zone_ressource.grid(column=0, row=2)
+      self.zone_ressource.grid(column=0, row=1)
 
       """CREATION DE L'ARBRE DE COMPETENCE"""
       
@@ -333,18 +400,24 @@ class Fenetre():
    def setGameController(self, gameController):
       self.gameController = gameController
       self.finTour.config(command=self.gameController.finTour)
-      
+     
    """   EVENT  """
    
    def onTuileClick(self, event):
       x, y = self.gameZone.translateToIsoScroll(event.x, event.y)
+      print(x, y, self.carte.terrain[x][y].i, self.carte.terrain[x][y].j)
       self.userInterface.clear()
       self.gameZone.currentTuile = self.carte.terrain[x][y]
       if len(self.carte.terrain[x][y].getEntite()) > 0  :
          #Il y a des entités sur la tuile
          entite = self.carte.terrain[x][y].getEntite()
          self.gameZone.selectTerritoireEntite(self.carte.terrain[x][y])
+<<<<<<< HEAD
          print(entite[0].pa)
+=======
+         self.gameZone.currentEntite = entite[0]
+         print(entite[0].pa)         
+>>>>>>> refs/remotes/origin/Deplacement-Soldat
          pass
       
       elif self.carte.terrain[x][y].getBatiment() != None:
@@ -355,6 +428,7 @@ class Fenetre():
                self.gameZone.currentCity = self.carte.terrain[x][y]
                #on met en selection les zones constructibles
                self.gameZone.selectTerritoireMairie(self.carte.terrain[x][y])
+               
             else:
                self.userInterface.clear()
                self.userInterface.affichageBouton(self.carte.terrain[x][y])
@@ -364,15 +438,23 @@ class Fenetre():
             pass
       else:
          #Il y a juste un terrain sur la tuile
-         if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
-            #Affichage des boutons 
-            self.userInterface.clear()
-            self.userInterface.affichageBouton(self.carte.terrain[x][y])
-         elif len(self.gameZone.selectedTkId) != 0:
-            self.gameZone.deselect()
-            self.userInterface.clear()
-            #self.description
-            
+         if self.gameZone.selectionType == "Batiment":
+            if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
+               #Affichage des boutons 
+               self.userInterface.clear()
+               self.userInterface.affichageBouton(self.carte.terrain[x][y])
+            elif len(self.gameZone.selectedTkId) != 0:
+               self.gameZone.deselect()
+               self.userInterface.clear()
+               #self.description
+         else:
+            if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
+               self.userInterface.clear()
+               self.gameZone.moveUnitTo(self.carte.terrain[x][y])
+            elif len(self.gameZone.selectedTkId) != 0:
+               self.gameZone.deselect()
+               self.userInterface.clear()            
+               
    def onArbreClick(self, event):
       """ CLIC DANS L'ARBRE DES COMPETENCES """
       item = event.widget.find_closest(event.x, event.y)
@@ -405,7 +487,27 @@ class Fenetre():
                self.gameZone.afficherElementIndex(element)
             self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
             self.gameZone.selectTerritoire(self.gameZone.currentCity)
+<<<<<<< HEAD
             self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
+=======
+            self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)            
+   
+   def onArbreClick(self, event):
+      """ PASCAL A FAIRE ARBRE DES COMPETENCES """
+      item = event.widget.find_closest(event.x, event.y)
+      for iAmelioration in self.arbreCompetence.availableList:
+         if iAmelioration.tkId == item[0]:
+            self.arbreCompetence.unlockedList.append(iAmelioration)
+            x = iAmelioration.x
+            y = iAmelioration.y
+            self.arbreCompetence.cadre = elementGraphique.Cadre(x, y, ArbreCompetence)
+            self.arbreCompetence.unlockedList.append(self.arbreCompetence.cadre)
+            self.arbreCompetence.afficherElement(self.arbreCompetence.cadre)            
+            print (self.arbreCompetence.unlockedList)
+            print (iAmelioration.effet)
+            
+   
+>>>>>>> refs/remotes/origin/Deplacement-Soldat
 
    def onKeyPress(self, event):
       """METHODE APPELE QUAND UNE TOUCHE DU CLAVIER EST ENFONCE"""

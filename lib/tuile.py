@@ -94,3 +94,9 @@ class Tuile():
    
    def getEntite(self):
       return self.entite
+   
+   def removeEntite(self, entite):
+      self.entite.remove(entite)
+      
+   def addEntite(self, entite):
+      self.entite.append(entite)
