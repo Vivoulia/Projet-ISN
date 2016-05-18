@@ -229,6 +229,9 @@ class UserInterface(Canvas):
       self.boutonScierie = elementGraphique.BoutonScierie()
       self.boutonCaserne = elementGraphique.BoutonCaserne()
       self.boutonChemin = elementGraphique.BoutonChemin()
+      self.boutonFerme = elementGraphique.BoutonFerme()
+      self.boutonMoulin = elementGraphique.BoutonMoulin()
+      self.boutonForge = elementGraphique.BoutonForge()
       self.boutonOuvrier = elementGraphique.BoutonOuvrier()
       self.boutonRecrutementEpeiste = elementGraphique.BoutonRecrutementEpeiste()
       self.boutonListe.append(self.boutonTour)
@@ -240,6 +243,9 @@ class UserInterface(Canvas):
       self.boutonListe.append(self.boutonChemin)
       self.boutonListe.append(self.boutonRecrutementEpeiste)
       self.boutonListe.append(self.boutonOuvrier)
+      self.boutonListe.append(self.boutonMoulin)
+      self.boutonListe.append(self.boutonForge)
+      self.boutonListe.append(self.boutonFerme)
       
    def afficherBouton(self, element):
       """AFFICHE UN OBJET DE TYPE ELEMENT GRAPHIQUE ENVOYE EN PARAMETRE"""
@@ -263,21 +269,23 @@ class UserInterface(Canvas):
             self.boutonMine.setIndice(0)
             self.afficherBouton(self.boutonMine)
          elif tuile.getTerrain().getNom() == "Plaine":
-            self.boutonTour.setIndice(0)
-            self.boutonChamp.setIndice(1)
+            self.boutonChemin.setIndice(0)
+            self.boutonFerme.setIndice(1)
             self.boutonEntrepot.setIndice(2)
-            self.boutonChemin.setIndice(3)
-            self.boutonCaserne.setIndice(4)
-            if "militaire" in self.fenetre.gameController.getJoueurActif().listAmelioration :
-               self.boutonCaserne.setIndice(3)
-               self.boutonChemin.setIndice(4)
-               self.afficherBouton(self.boutonCaserne)
-            else:
-               self.boutonChemin.setIndice(3)
-               self.boutonCaserne.setIndice(4)
-               self.afficherBouton(self.boutonCaserne)
+            self.boutonForge.setIndice(3)
+            self.boutonTour.setIndice(4)
+            self.boutonCaserne.setIndice(5)
+            self.boutonMoulin.setIndice(6)
+            #if "militaire" in self.fenetre.gameController.getJoueurActif().listAmelioration :
+              # self.boutonCaserne.setIndice(3)
+             #  self.boutonChemin.setIndice(4)
+             #  self.afficherBouton(self.boutonCaserne)
+            #else:
+            self.afficherBouton(self.boutonCaserne)
             self.afficherBouton(self.boutonTour)
-            self.afficherBouton(self.boutonChamp)
+            self.afficherBouton(self.boutonFerme)
+            self.afficherBouton(self.boutonMoulin)
+            self.afficherBouton(self.boutonForge)
             self.afficherBouton(self.boutonEntrepot)
             self.afficherBouton(self.boutonChemin)
             joueurActif = self.fenetre.gameController.getJoueurActif()
