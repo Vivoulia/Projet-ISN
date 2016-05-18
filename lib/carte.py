@@ -23,8 +23,8 @@ class Carte():
       for i in range(LIGNE):
          for j in range(COLONNE):
             alea = randint(0,5)
-            x = 590 + (i - j) * (TUILE_X/2)
-            y = 100 + (i + j) * (TUILE_Y/2)
+            x = 590 + (i - (j+1)) * (TUILE_X/2)
+            y = 100 + (i + (j+1)) * (TUILE_Y/2)
             self.terrain[i][j] = tuile.Tuile(x, y, i ,j)
             if alea == 0:
                self.terrain[i][j].setTerrainPlaine()
