@@ -46,9 +46,9 @@ class GameZone(ZoneAffichage):
       
    def afficherElement(self, element):
       """AFFICHE UN OBJET DE TYPE ELEMENT GRAPHIQUE ENVOYE EN PARAMETRE"""
-      tkId = self.create_image(element.x, element.y, image=element.getTexture(), anchor=SW) 
+      tkId = self.create_image(element.x, element.y, image=element.getTexture(), anchor=SW)
       element.setTkId(tkId)
-      self.tag_bind(tkId, '<ButtonPress-1>', self.fenetre.onTuileClick)  
+      self.tag_bind(tkId, '<ButtonPress-1>', self.fenetre.onTuileClick)
       self.update()
    
    def afficherElementIndex(self, element):
@@ -167,7 +167,7 @@ class UserInterface(Canvas):
       #self.description.pack()
       self.create_text(50,50, text="Test")
       fileName="texture/GUI/fond descritpion.gif"
-      self.fondDescription = PhotoImage(file = fileName) 
+      self.fondDescription = PhotoImage(file = fileName)
       self.create_image(0,996, image=self.fondDescription, anchor=SW)
 
       """ BOUTON """
@@ -279,8 +279,17 @@ class RessourceInterFace(Canvas):
       Canvas.__init__(self, widgetParent, bg=background, width=width, height=height)
       self.parent = widgetParent
       self.fenetre = fenetre
-      self.ressource = self.create_text(10,10, text="Ressource")
-   
+      self.ressource = self.create_text(30,10, text="Ressource")
+      fondRessource = elementGraphique.FondRessource(30, 10, self)
+      print("affichage de la barre de ressources")
+      self.afficherElement(fondRessource)
+      
+   def afficherElement(self, element):
+      """AFFICHE UN OBJET DE TYPE ELEMENT GRAPHIQUE ENVOYE EN PARAMETRE"""
+      tkId = self.create_image(element.x, element.y, image=element.getTexture(), anchor=SW) 
+      element.setTkId(tkId)
+      self.update()
+
 class Fenetre():
    def __init__(self):
       self.windows = Tk()
@@ -309,7 +318,7 @@ class Fenetre():
       """CREATION DE LA ZONE RESSOURCE"""
       
       self.zone_ressource = Frame(self.windows)
-      self.ressourceInterFace = RessourceInterFace(self.zone_ressource, self, "red", width=TUILE_X*9+MARGE_X, height=60)
+      self.ressourceInterFace = RessourceInterFace(self.zone_ressource, self, "white", width=TUILE_X*9+MARGE_X, height=80)
       self.ressourceInterFace.grid(column=0, row=0)
       self.zone_ressource.grid(column=0, row=2)
 
@@ -405,7 +414,10 @@ class Fenetre():
       screenY  = self.userInterface.canvasy(event.y)
       item = event.widget.find_closest(screenX, screenY)
       for iBouton in self.userInterface.boutonListe:
-         if iBouton.tkId == item[0]:
+         if iBouton == self.userInterface.boutonOuvrier:
+            self.gameController.getJoueurActif().nbOuvrier += 1
+            print (self.gameController.getJoueurActif().nbOuvrier)
+         elif iBouton.tkId == item[0]:
             element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
             print(element)
             if element != None:

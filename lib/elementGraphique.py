@@ -46,12 +46,26 @@ class TerrainForet(Terrain):
       self.nom = "Foret"
       self.description = "Foret dense, a eviter si vous etes une petite fille a capuche rouge"
       
+class TerrainVide(Terrain):
+   def __init__(self,x, y, parent):
+      Terrain.__init__(self,x, y, parent, "vide.gif")
+      self.cout = 0
+      self.nom = "vide"
+      self.description = "Semblable aux grandes steppes de Russie"
+
 class TerrainPlaine(Terrain):
    def __init__(self,x, y, parent):
       Terrain.__init__(self,x, y, parent, "plaine.gif")
       self.cout = 0
       self.nom = "Plaine"
-      self.description = "Seimblable aux grandes steppes de Russie"
+      self.description = "Semblable aux grandes steppes de Russie"
+      
+class TerrainPlaine2(Terrain):
+   def __init__(self,x, y, parent):
+      Terrain.__init__(self,x, y, parent, "plaine2.gif")
+      self.cout = 0
+      self.nom = "Plaine"
+      self.description = "Semblable aux grandes steppes de Russie"
       
 class TerrainMontagne(Terrain):
    def __init__(self,x, y, parent):
@@ -59,6 +73,13 @@ class TerrainMontagne(Terrain):
       self.cout = 2
       self.nom = "Montagne"
       self.description = "Grande montagne, zone de subduction"
+
+class TerrainMontagneBasse(Terrain):
+   def __init__(self,x, y, parent):
+      Terrain.__init__(self,x, y, parent, "montagneBasse.gif")
+      self.cout = 2
+      self.nom = "Montagne"
+      self.description = "Petite montagne, facile a creuser"
 
 class Entite(ElementJouable):
    def __init__(self, x, y, joueur, parent, textureName, textureDesc="testTuile2D.gif" , cheminTexture = "texture/Entite/", cheminDesc = "texture/Entite/"):
@@ -182,12 +203,10 @@ class Caserne(Batiment):
 
 class Chemin(Batiment):
    def __init__(self, x, y, joueur, parent):
-      if joueur.nbRessource >= joueur.coutChemins:
-         joueur.nbRessource -= joueur.coutChemins
-         joueur.coutChemins += round(joueur.coutChemins*1.3)
          Batiment.__init__(self, x, y, joueur, parent, textureName = "chemin.gif", textureDesc="testTuile2D.gif")
          self.description = "alignement de petits cailloux pour retrouver son chemin"
          self.nom = "Chemin"
+
 
 class Decor(ElementJouable):
    def __init__(self, x, y, parent, textureName="erreur.gif", textureDesc="testTuile2D.gif", cheminTexture = "texture/Decor/", cheminDesc = "texture/Decor/"):
@@ -237,9 +256,7 @@ class BoutonOuvrier(Bouton):
    def __init__(self, textureName="bouton_ouvrier.gif"):
       Bouton.__init__(self, textureName)
       self.description = "recruter un ouvrier"
-   def event(self, tuile, joueur):
-      joueur.nbOuvriers += 1
-      print(joueur.nbOuvrier)
+
 
 class BoutonChemin(Bouton):
    def __init__(self, textureName="bouton_chemin.gif"):
@@ -316,6 +333,9 @@ class BoutonRecrutementEpeiste(Bouton):
       entite = tuile.addEntiteEpeiste(joueur)
       return entite
 
+class FondRessource(ElementGraphique):
+   def __init__(self, x, y, parent, textureName = "barre_ressources.gif", cheminTexture = "texture/GUI/"):  
+      ElementGraphique.__init__(self, x, y, parent, textureName, cheminTexture)   
 
 class ImageAmelioration(ElementGraphique):
    def __init__(self, x, y, parent, textureName, cheminTexture = "texture/amelioration/"):  

@@ -1,5 +1,6 @@
 from tkinter import *
 from . import elementGraphique
+from random import randint
 
 class Tuile():
    def __init__(self,x ,y, i, j):
@@ -20,13 +21,26 @@ class Tuile():
       self.terrain = elementGraphique.TerrainForet(self.x, self.y, self)
       return self.terrain
    
+   def setTerrainVide(self):
+      self.terrain = elementGraphique.TerrainVide(self.x, self.y, self)
+      return self.terrain   
+
    def setTerrainPlaine(self):
-      self.terrain = elementGraphique.TerrainPlaine(self.x, self.y, self)
+      alea = randint(1,7)
+      if alea == 1:
+         self.terrain = elementGraphique.TerrainPlaine2(self.x, self.y, self)
+      else:
+         self.terrain = elementGraphique.TerrainPlaine(self.x, self.y, self)
       return self.terrain
 
    def setTerrainMontagne(self):
       self.terrain = elementGraphique.TerrainMontagne(self.x, self.y, self)
       return self.terrain
+   
+   def setTerrainMontagneBasse(self):
+      self.terrain = elementGraphique.TerrainMontagneBasse(self.x, self.y, self)
+      return self.terrain
+   
 
    def addBatimentMairie(self, camp):
       self.batiment = elementGraphique.Mairie(self.x, self.y, camp, self)

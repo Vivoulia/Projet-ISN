@@ -5,6 +5,7 @@ COLONNE = 30
 LIGNE = 30
 TUILE_X = 124
 TUILE_Y = 62
+marge = 3
 
 class Carte():
 
@@ -14,7 +15,7 @@ class Carte():
       self.fenetre = None
       self.joueur1 = None
       self.joueur2 = None
-            
+
    def load(self):
       """GENERE LA CARTE DE JEU ET L'AFFICHE"""
       x = 0
@@ -22,22 +23,27 @@ class Carte():
       texture = ""
       for i in range(LIGNE):
          for j in range(COLONNE):
-            alea = randint(0,5)
             x = 590 + (i - j) * (TUILE_X/2)
             y = 100 + (i + j) * (TUILE_Y/2)
             self.terrain[i][j] = tuile.Tuile(x, y, i ,j)
-            if alea == 0:
-               self.terrain[i][j].setTerrainPlaine()
-            elif alea == 1:
-               self.terrain[i][j].setTerrainForet()
-            elif alea == 2:
+            if i==0 or j==0 or i==LIGNE-1 or j==COLONNE-1 or i + j > COLONNE+15  or i + j < COLONNE-20:
+               self.terrain[i][j].setTerrainVide()
+            elif i < marge or j < marge or i >= LIGNE-marge or j >= COLONNE-marge or (i+j > COLONNE+14-marge) or (i + j < COLONNE-19+marge):
                self.terrain[i][j].setTerrainMontagne()
-            elif alea == 3:
-               self.terrain[i][j].setTerrainPlaine()
-            elif alea == 4:
-               self.terrain[i][j].setTerrainPlaine()
-            elif alea == 5:
-               self.terrain[i][j].setTerrainPlaine()
+            elif i == marge or j == marge or i == LIGNE-marge-1 or j == COLONNE-marge-1 or (i+j == COLONNE+14-marge) or i + j == COLONNE-19+marge:
+               alea = randint(1,4)
+               if alea != 1:
+                  self.terrain[i][j].setTerrainMontagneBasse()
+               elif alea == 3:
+                  self.terrain[i][j].setTerrainForet()
+               else:
+                  self.terrain[i][j].setTerrainPlaine()
+            else:
+               alea = randint(0,5)
+               if alea <= 3:
+                  self.terrain[i][j].setTerrainPlaine()
+               else:
+                  self.terrain[i][j].setTerrainForet()
 
 
             self.fenetre.gameZone.afficherElement(self.terrain[i][j].terrain)
@@ -46,13 +52,13 @@ class Carte():
                self.fenetre.gameZone.afficherElement(self.terrain[i][j].decor[len(self.terrain[i][j].decor)-1])   
             #self.fenetre.can.update()
       #On définit les deux villes de depart et on les assignent au joueur:
-      self.terrain[4][4].addBatimentMairieRessource(self.joueur1)
-      self.joueur1.setVilleDepart(self.terrain[4][4].getBatiment())
-      self.fenetre.gameZone.afficherElementIndex(self.terrain[4][4].getBatiment())
-      
-      self.terrain[20][20].addBatimentMairieRessource(self.joueur2)
-      self.joueur2.setVilleDepart(self.terrain[20][20].getBatiment())  
-      self.fenetre.gameZone.afficherElementIndex(self.terrain[20][20].getBatiment())
+      self.terrain[22][7].addBatimentMairieRessource(self.joueur1)
+      self.joueur1.setVilleDepart(self.terrain[22][7].getBatiment())
+      self.fenetre.gameZone.afficherElementIndex(self.terrain[22][7].getBatiment())
+
+      self.terrain[7][22].addBatimentMairieRessource(self.joueur2)
+      self.joueur2.setVilleDepart(self.terrain[7][22].getBatiment())  
+      self.fenetre.gameZone.afficherElementIndex(self.terrain[7][22].getBatiment())
       
       #self.fenetre.afficherElement(self.terrain[i][j])
    def setFenetre(self, fenetre):

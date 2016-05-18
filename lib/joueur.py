@@ -11,7 +11,7 @@ class Joueur():
         self.scieries = 0
         self.chemins = 0
         self.coutChemins = 10
-        nbOuvriers = 1
+        self.nbOuvrier = 1
 
     def setVilleDepart(self, ville):
         self.villeDepart = ville
