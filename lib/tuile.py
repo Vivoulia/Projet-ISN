@@ -50,6 +50,14 @@ class Tuile():
       self.batiment = elementGraphique.MairieRessource(self.x, self.y, camp, self)
       return self.batiment
    
+   def addBatimentFerme(self, camp):
+      self.batiment = elementGraphique.Ferme(self.x, self.y, camp, self)
+      return self.batiment   
+   
+   def addBatimentMoulin(self, camp):
+      self.batiment = elementGraphique.Moulin(self.x, self.y, camp, self)
+      return self.batiment
+   
    def addBatimentChemin(self, camp):
       self.batiment = elementGraphique.Chemin(self.x, self.y, camp, self)
       return self.batiment   
@@ -60,10 +68,6 @@ class Tuile():
 
    def addBatimentScierie(self, camp):
       self.batiment = elementGraphique.Scierie(self.x, self.y, camp, self)
-      return self.batiment
-
-   def addBatimentReservoir(self, camp):
-      self.batiment = elementGraphique.Reservoir(self.x, self.y, camp, self)
       return self.batiment
 
    def addBatimentMine(self, camp):

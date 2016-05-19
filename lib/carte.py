@@ -6,7 +6,11 @@ LIGNE = 30
 TUILE_X = 124
 TUILE_Y = 62
 marge = 3
-
+"COORDS DES VILLES"
+x1 = 6
+y1 = 23
+x2 = 22
+y2 = 7
 class Carte():
 
    def __init__(self):
@@ -40,7 +44,7 @@ class Carte():
                   self.terrain[i][j].setTerrainPlaine()
             else:
                alea = randint(0,5)
-               if alea <= 3:
+               if alea <= 4:
                   self.terrain[i][j].setTerrainPlaine()
                else:
                   self.terrain[i][j].setTerrainForet()
@@ -49,16 +53,17 @@ class Carte():
             self.fenetre.gameZone.afficherElement(self.terrain[i][j].terrain)
             if self.terrain[i][j].getTerrain().getNom() == "Foret":
                self.terrain[i][j].addDecorForet()
-               self.fenetre.gameZone.afficherElement(self.terrain[i][j].decor[len(self.terrain[i][j].decor)-1])   
+               self.fenetre.gameZone.afficherElement(self.terrain[i][j].decor[len(self.terrain[i][j].decor)-1])
+      
             #self.fenetre.can.update()
       #On définit les deux villes de depart et on les assignent au joueur:
-      self.terrain[22][7].addBatimentMairieRessource(self.joueur1)
-      self.joueur1.setVilleDepart(self.terrain[22][7].getBatiment())
-      self.fenetre.gameZone.afficherElementIndex(self.terrain[22][7].getBatiment())
+      self.terrain[x1][y1].addBatimentMairieRessource(self.joueur1)
+      self.joueur1.setVilleDepart(self.terrain[x1][y1].getBatiment())
+      self.fenetre.gameZone.afficherElementIndex(self.terrain[x1][y1].getBatiment())
 
-      self.terrain[7][22].addBatimentMairieRessource(self.joueur2)
-      self.joueur2.setVilleDepart(self.terrain[7][22].getBatiment())  
-      self.fenetre.gameZone.afficherElementIndex(self.terrain[7][22].getBatiment())
+      self.terrain[x2][y2].addBatimentMairieRessource(self.joueur2)
+      self.joueur2.setVilleDepart(self.terrain[x2][y2].getBatiment())  
+      self.fenetre.gameZone.afficherElementIndex(self.terrain[x2][y2].getBatiment())
       
       #self.fenetre.afficherElement(self.terrain[i][j])
    def setFenetre(self, fenetre):

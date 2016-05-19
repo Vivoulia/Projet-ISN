@@ -159,6 +159,20 @@ class MairieRessource(Mairie):
       if self.nom == "Mairie":
          self.nom = "Palais"
 
+class Ferme(Batiment):
+   def __init__(self, x, y, joueur, parent):
+      Batiment.__init__(self, x, y, joueur, parent, textureName = "ferme.gif", textureDesc="testTuile2D.gif")
+      self.production = 10
+      self.description = "100% bio"
+      self.nom = "Ferme"
+      
+class Moulin(Batiment):
+   def __init__(self, x, y, joueur, parent):
+      Batiment.__init__(self, x, y, joueur, parent, textureName = "moulin.gif", textureDesc="testTuile2D.gif")
+      self.production = 10
+      self.description = "meunieeeeeer, tu dooooors"
+      self.nom = "Moulin"
+
 class Champ(Batiment):
    def __init__(self, x, y, joueur, parent):
       joueur.champs += 1
@@ -277,6 +291,29 @@ class BoutonOuvrier(Bouton):
       Bouton.__init__(self, textureName)
       self.description = "recruter un ouvrier"
 
+class BoutonFerme(Bouton):
+   def __init__(self, textureName="bouton_ferme.gif"):
+      Bouton.__init__(self, textureName)
+      self.description = "Construire une ferme"
+   def event(self, tuile, joueur):
+      ferme = tuile.addBatimentFerme(joueur)
+      return ferme
+
+class BoutonForge(Bouton):
+   def __init__(self, textureName="bouton_forge.gif"):
+      Bouton.__init__(self, textureName)
+      self.description = "Construire une forge"
+   def event(self, tuile, joueur):
+      forge = tuile.addBatimentForge(joueur)
+      return forge
+   
+class BoutonMoulin(Bouton):
+   def __init__(self, textureName="bouton_moulin.gif"):
+      Bouton.__init__(self, textureName)
+      self.description = "Construire un moulin"
+   def event(self, tuile, joueur):
+      moulin = tuile.addBatimentMoulin(joueur)
+      return moulin
 
 class BoutonChemin(Bouton):
    def __init__(self, textureName="bouton_chemin.gif"):
@@ -300,7 +337,6 @@ class BoutonEntrepot(Bouton):
    def __init__(self, textureName="bouton_entrepot.gif"):
       Bouton.__init__(self, textureName)
       self.description = "Construire un entrepot"
-   
    def event(self, tuile, joueur):
       entrepot = tuile.addBatimentEntrepot(joueur)
       return entrepot
