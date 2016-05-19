@@ -66,11 +66,27 @@ class GameZone(ZoneAffichage):
    def selectTuile(self, selection, texture):
       """AFFICHE LES TUILES ENVOYE DANS UNE LIST EN PARAMETRE"""
       fileName="texture/" + texture
-      self.photo = PhotoImage(file = fileName)
+      self.textureNormal = PhotoImage(file = fileName)
+      
+      fileName2="texture/attaquer.gif"
+      self.textureSoldatEnnemi = PhotoImage(file = fileName2)      
       for iTuile in range(len(selection)):
          i, j = self.translateToIso(selection[iTuile].x, selection[iTuile].y)
-         print("i :",i, "j :", j )
-         tkId = self.create_image(selection[iTuile].x, selection[iTuile].y, image=self.photo,  anchor=SW)
+         if self.selectionType == "Entite":
+            if len(selection[iTuile].getEntite()) > 0:
+               if selection[iTuile].entite[0].joueur != self.fenetre.gameController.getJoueurActif():
+                  tkId = self.create_image(selection[iTuile].x, selection[iTuile].y, image=self.textureSoldatEnnemi,  anchor=SW)
+               else:
+                  tkId = self.create_image(selection[iTuile].x, selection[iTuile].y, image=self.textureNormal,  anchor=SW)               
+            elif selection[iTuile].getBatiment() != None:
+               if selection[iTuile].getBatiment().joueur != self.fenetre.gameController.getJoueurActif():
+                  tkId = self.create_image(selection[iTuile].x, selection[iTuile].y, image=self.textureSoldatEnnemi,  anchor=SW)
+               else:
+                  tkId = self.create_image(selection[iTuile].x, selection[iTuile].y, image=self.textureNormal,  anchor=SW)   
+            else:
+               tkId = self.create_image(selection[iTuile].x, selection[iTuile].y, image=self.textureNormal,  anchor=SW)
+         else:
+            tkId = self.create_image(selection[iTuile].x, selection[iTuile].y, image=self.textureNormal,  anchor=SW)
          self.tag_bind(tkId, '<ButtonPress-1>', self.fenetre.onTuileClick)
          if self.fenetre.carte.terrain[i][j].getBatiment() != None:
             self.tag_lower(tkId, self.fenetre.carte.terrain[i][j].getBatiment().tkId)
@@ -135,6 +151,7 @@ class GameZone(ZoneAffichage):
                   #i += 1
                else:
                   i-=1
+         self.selectionType = "Entite"
          self.selectTuile(self.selectedTuile, "case selection entite.gif")
          self.selectionType = "Entite"
          print("nbTuileParcouru :", i)
@@ -416,8 +433,12 @@ class Fenetre():
       if len(self.carte.terrain[x][y].getEntite()) > 0  :
          #Il y a des entités sur la tuile
          entite = self.carte.terrain[x][y].getEntite()
-         self.gameZone.selectTerritoireEntite(self.carte.terrain[x][y])
-         self.gameZone.currentEntite = entite[0]
+         if entite[0].joueur == self.gameController.getJoueurActif():
+            self.gameZone.selectTerritoireEntite(self.carte.terrain[x][y])
+            self.gameZone.currentEntite = entite[0]
+         else:
+            if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
+               print("a l'attaque")
       
       elif self.carte.terrain[x][y].getBatiment() != None:
          #Il y a un batiment sur la tuile
@@ -447,8 +468,14 @@ class Fenetre():
                #self.description
          else:
             if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
-               self.userInterface.clear()
-               self.gameZone.moveUnitTo(self.carte.terrain[x][y])
+               if len(self.carte.terrain[x][y].getEntite()) > 0 :
+                  #Il y a des entités sur la tuile
+                  print("a l'attaque")
+                  entite = self.carte.terrain[x][y].getEntite()
+                  if entite[0].joueur != self.gameController.getJoueurActif():
+                     print("a l'attaque")
+               else:
+                  self.gameZone.moveUnitTo(self.carte.terrain[x][y])
             elif len(self.gameZone.selectedTkId) != 0:
                self.gameZone.deselect()
                self.userInterface.clear()   
