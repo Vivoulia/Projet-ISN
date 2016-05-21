@@ -154,15 +154,14 @@ class MairieRessource(Mairie):
       self.territoire = list() #Tableau contenant les tuiles qui sont reliées a la ville
       self.territoire.append(parent)
       self.description = "Pour exploiter sans vergogne toutes les ressources disponibles"
-      self.nom = "Mairie Ressource"      
-   def upgrade(self):
-      if self.nom == "Mairie":
-         self.nom = "Palais"
+      self.nom = "Mairie Ressource"
 
-class Ferme(Batiment):
+class Ferme(BatimentSpecial):
    def __init__(self, x, y, joueur, parent):
-      Batiment.__init__(self, x, y, joueur, parent, textureName = "ferme.gif", textureDesc="testTuile2D.gif")
+      BatimentSpecial.__init__(self, x, y, joueur, parent, textureName = "ferme.gif", textureDesc="testTuile2D.gif")
       self.production = 10
+      self.territoire = list() #Tableau contenant les tuiles qui sont reliées a la ville
+      self.territoire.append(parent)
       self.description = "100% bio"
       self.nom = "Ferme"
       
@@ -289,11 +288,13 @@ class Bouton(ElementGraphique):
 class BoutonOuvrier(Bouton):
    def __init__(self, textureName="bouton_ouvrier.gif"):
       Bouton.__init__(self, textureName)
+      self.categorie = "amelioration"
       self.description = "recruter un ouvrier"
 
 class BoutonFerme(Bouton):
    def __init__(self, textureName="bouton_ferme.gif"):
       Bouton.__init__(self, textureName)
+      self.categorie = "construction"
       self.description = "Construire une ferme"
    def event(self, tuile, joueur):
       ferme = tuile.addBatimentFerme(joueur)
@@ -302,6 +303,7 @@ class BoutonFerme(Bouton):
 class BoutonForge(Bouton):
    def __init__(self, textureName="bouton_forge.gif"):
       Bouton.__init__(self, textureName)
+      self.categorie = "construction"
       self.description = "Construire une forge"
    def event(self, tuile, joueur):
       forge = tuile.addBatimentForge(joueur)
@@ -310,6 +312,7 @@ class BoutonForge(Bouton):
 class BoutonMoulin(Bouton):
    def __init__(self, textureName="bouton_moulin.gif"):
       Bouton.__init__(self, textureName)
+      self.categorie = "construction"
       self.description = "Construire un moulin"
    def event(self, tuile, joueur):
       moulin = tuile.addBatimentMoulin(joueur)
@@ -318,6 +321,7 @@ class BoutonMoulin(Bouton):
 class BoutonChemin(Bouton):
    def __init__(self, textureName="bouton_chemin.gif"):
       Bouton.__init__(self, textureName)
+      self.categorie = "construction"
       self.description = "Construire un chemin"
    def event(self, tuile, joueur):
       chemin = tuile.addBatimentChemin(joueur)
@@ -327,6 +331,7 @@ class BoutonChemin(Bouton):
 class BoutonChamp(Bouton):
    def __init__(self, textureName="bouton_champ.gif"):
       Bouton.__init__(self, textureName)
+      self.categorie = "construction"
       self.description = "Construire un champ"
    def event(self, tuile, joueur):
       champ = tuile.addBatimentChamp(joueur)
@@ -336,6 +341,7 @@ class BoutonChamp(Bouton):
 class BoutonEntrepot(Bouton):
    def __init__(self, textureName="bouton_entrepot.gif"):
       Bouton.__init__(self, textureName)
+      self.categorie = "construction"
       self.description = "Construire un entrepot"
    def event(self, tuile, joueur):
       entrepot = tuile.addBatimentEntrepot(joueur)
@@ -345,6 +351,7 @@ class BoutonEntrepot(Bouton):
 class BoutonMine(Bouton):
    def __init__(self, textureName="bouton_mine.gif"):
       Bouton.__init__(self, textureName)
+      self.categorie = "construction"
       self.description = "Construire une mine"
       
    def event(self, tuile, joueur):
@@ -354,6 +361,7 @@ class BoutonMine(Bouton):
 class BoutonScierie(Bouton):
    def __init__(self, textureName="bouton_scierie.gif"):
       Bouton.__init__(self, textureName)
+      self.categorie = "construction"
       self.description = "Construire une scierie"
    
    def event(self, tuile, joueur):
@@ -364,6 +372,7 @@ class BoutonScierie(Bouton):
 class BoutonTour(Bouton):
    def __init__(self, textureName="bouton_tour.gif"):
       Bouton.__init__(self, textureName)
+      self.categorie = "construction"
       self.description = "Construire une tour"
    
    def event(self, tuile, joueur):
@@ -374,20 +383,35 @@ class BoutonTour(Bouton):
 class BoutonCaserne(Bouton):
    def __init__(self, textureName="bouton_caserne.gif"):
       Bouton.__init__(self, textureName)
+      self.categorie = "construction"
       self.description = "Construire une caserne"
-   
+
    def event(self, tuile, joueur):
       caserne = tuile.addBatimentCaserne(joueur)
       return caserne
-      
+
 class BoutonRecrutementEpeiste(Bouton):
    def __init__(self, textureName="bouton_recrutement_epeiste.gif"):
       Bouton.__init__(self, textureName)
+      self.categorie = "recrutement"
       self.description = "Recruter un epeiste"
-   
+
    def event(self, tuile, joueur):
       entite = tuile.addEntiteEpeiste(joueur)
       return entite
+
+class BoutonAmeliorationCaserne(Bouton):
+   def __init__(self, textureName="bouton_amelioration_caserne.gif"):
+      Bouton.__init__(self, textureName)
+      self.categorie = "amelioration"
+      self.description = "Debloque la caserne"
+
+class BoutonAmeliorationChemin(Bouton):
+   def __init__(self, textureName="bouton_amelioration_chemin.gif"):
+      Bouton.__init__(self, textureName)
+      self.categorie = "amelioration"
+      self.description = "Debloque les chemins"
+
 
 class FondRessource(ElementGraphique):
    def __init__(self, x, y, parent, textureName = "barre_ressources.gif", cheminTexture = "texture/GUI/"):  
