@@ -228,11 +228,6 @@ class GameZone(ZoneAffichage):
       else:
          return False
 
-<<<<<<< HEAD
-   
-=======
->>>>>>> origin/master
-
 class UserInterface(Canvas):
    def __init__(self, widgetParent, fenetre, background, width, height):
       Canvas.__init__(self, widgetParent, bg=background, width=width, height=height)
@@ -398,16 +393,11 @@ class RessourceInterFace(Canvas):
       self.parent = widgetParent
       self.fenetre = fenetre
       self.textRessource = self.create_text(50,10, font='Helvetica 12', text="Ressource: ")
-      #self.textNbRessourceVar = StringVar(widgetParent, self.fenetre.gameController.getJoueurActif().getNbRessourceTour())
+      self.textNbRessourceVar = StringVar(widgetParent, self.fenetre.gameController.getJoueurActif().getNbRessourceTour())
       self.textNbRessource = self.create_text(100,10, font='Helvetica 12', text=self.textNbRessourceVar.get())
       self.textProduction = self.create_text(200,10, font='Helvetica 12', text="Production Par tour") 
       print("affichage de la barre de ressources")
-<<<<<<< HEAD
-      
-=======
-      self.afficherElement(fondRessource)
 
->>>>>>> origin/master
    def afficherElement(self, element):
       """AFFICHE UN OBJET DE TYPE ELEMENT GRAPHIQUE ENVOYE EN PARAMETRE"""
       tkId = self.create_image(element.x, element.y, image=element.getTexture(), anchor=SW) 
@@ -490,19 +480,15 @@ class Fenetre():
          entite = self.carte.terrain[x][y].getEntite()
          if entite[0].joueur == self.gameController.getJoueurActif():
             self.gameZone.currentEntite = entite[0]
-<<<<<<< HEAD
             self.gameZone.afficherBarreDeVie(entite[0])
             self.gameZone.selectTerritoireEntite(self.carte.terrain[x][y])
          else:
             if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
                self.gameController.combat(self.gameZone.currentEntite, entite[0], self.gameZone)
-      
-=======
-            self.gameZone.selectTerritoireEntite(self.carte.terrain[x][y])
-         else:
-            if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
-               print("a l'attaque")
->>>>>>> origin/master
+               self.gameZone.selectTerritoireEntite(self.carte.terrain[x][y])
+            else:
+               if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
+                  print("a l'attaque")
       elif self.carte.terrain[x][y].getBatiment() != None:
          #Il y a un batiment sur la tuile
          if self.gameController.getJoueurActif() == self.carte.terrain[x][y].getBatiment().joueur:
