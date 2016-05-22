@@ -63,6 +63,16 @@ class GameZone(ZoneAffichage):
       self.tag_lower(tkId, self.fenetre.carte.terrain[i][j].terrain.tkId)
       self.update()
    
+      
+   def afficherBarreDeVie(self, entite):
+      x = entite.x-100
+      y = entite.y-100
+      self.tkId = self.create_rectangle(x, y, x+30, y+10, fill="green")   
+      
+   def supprimerElement(self, element):
+      self.delete(element.tkId)
+      del element
+   
    def selectTuile(self, selection, texture):
       """AFFICHE LES TUILES ENVOYE DANS UNE LIST EN PARAMETRE"""
       fileName="texture/" + texture
@@ -167,7 +177,7 @@ class GameZone(ZoneAffichage):
    
    def translateToIso(self, x, y):
       """TRANSLATE DES COORDONNEES X, Y EN COORDS ISOMETRIQUE"""
-      sreenX = x - 590 
+      sreenX = x - 590
       sreenY  = y - 100         
       x = (sreenY / TUILE_Y) + (sreenX/TUILE_X)
       y = (sreenY / TUILE_Y) - (sreenX/TUILE_X)
@@ -217,6 +227,7 @@ class GameZone(ZoneAffichage):
          return True
       else:
          return False
+
    
 
 class UserInterface(Canvas):
@@ -361,16 +372,20 @@ class RessourceInterFace(Canvas):
       Canvas.__init__(self, widgetParent, bg=background, width=width, height=height)
       self.parent = widgetParent
       self.fenetre = fenetre
-      self.ressource = self.create_text(30,10, text="Ressource")
-      fondRessource = elementGraphique.FondRessource(30, 10, self)
+      self.textRessource = self.create_text(50,10, font='Helvetica 12', text="Ressource: ")
+      #self.textNbRessourceVar = StringVar(widgetParent, self.fenetre.gameController.getJoueurActif().getNbRessourceTour())
+      self.textNbRessource = self.create_text(100,10, font='Helvetica 12', text=self.textNbRessourceVar.get())
+      self.textProduction = self.create_text(200,10, font='Helvetica 12', text="Production Par tour") 
       print("affichage de la barre de ressources")
-      self.afficherElement(fondRessource)
       
    def afficherElement(self, element):
       """AFFICHE UN OBJET DE TYPE ELEMENT GRAPHIQUE ENVOYE EN PARAMETRE"""
       tkId = self.create_image(element.x, element.y, image=element.getTexture(), anchor=SW) 
       element.setTkId(tkId)
       self.update()
+   
+   def actualiser(self):
+      pass
 
 class Fenetre():
    def __init__(self):
@@ -382,27 +397,27 @@ class Fenetre():
       """CREATTION DE LA ZONE DE JEU (canvas)"""
 
       self.zone_jeu = Frame(self.windows)
-      self.gameZone = GameZone(self.zone_jeu, self, "blue",width-300, height-100)
+      self.gameZone = GameZone(self.zone_jeu, self, "blue",width-300, height-150)
       self.gameZone.scale("all", 0, 0, 3 ,3)
       self.gameZone.grid(column=0, row=0)
       #self.zone_jeu.pack(side=LEFT,fill=Y)
-      self.zone_jeu.grid(column=0, row=0)
+      self.zone_jeu.grid(column=0, row=1)
 
       """CREATION DE L'INTERFACE UTILISATEUR"""
       
       self.zone_description = Frame(self.windows)
-      self.userInterface = UserInterface(self.zone_description, self, "brown", width=250, height=height-100)
+      self.userInterface = UserInterface(self.zone_description, self, "brown", width=250, height=height-150)
       self.userInterface.grid(column=0, row=0)
-      self.zone_description.grid(column=2, row=0)
+      self.zone_description.grid(column=1, row=1)
       self.finTour = Button(self.zone_description, text="Fin du Tour")
       self.finTour.grid(column=0, row=1)
       
       """CREATION DE LA ZONE RESSOURCE"""
       
       self.zone_ressource = Frame(self.windows)
-      self.ressourceInterFace = RessourceInterFace(self.zone_ressource, self, "white", width=TUILE_X*9+MARGE_X, height=80)
+      self.ressourceInterFace = RessourceInterFace(self.zone_ressource, self, "white", width-300, height=50)
       self.ressourceInterFace.grid(column=0, row=0)
-      self.zone_ressource.grid(column=0, row=2)
+      self.zone_ressource.grid(column=0, row=0)
 
       """CREATION DE L'ARBRE DE COMPETENCE"""
       
@@ -442,11 +457,12 @@ class Fenetre():
          #Il y a des entités sur la tuile
          entite = self.carte.terrain[x][y].getEntite()
          if entite[0].joueur == self.gameController.getJoueurActif():
-            self.gameZone.selectTerritoireEntite(self.carte.terrain[x][y])
             self.gameZone.currentEntite = entite[0]
+            self.gameZone.afficherBarreDeVie(entite[0])
+            self.gameZone.selectTerritoireEntite(self.carte.terrain[x][y])
          else:
             if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
-               print("a l'attaque")
+               self.gameController.combat(self.gameZone.currentEntite, entite[0], self.gameZone)
       
       elif self.carte.terrain[x][y].getBatiment() != None:
          #Il y a un batiment sur la tuile
@@ -478,10 +494,9 @@ class Fenetre():
             if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
                if len(self.carte.terrain[x][y].getEntite()) > 0 :
                   #Il y a des entités sur la tuile
-                  print("a l'attaque")
                   entite = self.carte.terrain[x][y].getEntite()
                   if entite[0].joueur != self.gameController.getJoueurActif():
-                     print("a l'attaque")
+                     pass
                else:
                   self.gameZone.moveUnitTo(self.carte.terrain[x][y])
             elif len(self.gameZone.selectedTkId) != 0:

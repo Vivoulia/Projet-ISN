@@ -11,6 +11,7 @@ x1 = 6
 y1 = 23
 x2 = 22
 y2 = 7
+
 class Carte():
 
    def __init__(self):

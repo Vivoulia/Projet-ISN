@@ -12,10 +12,17 @@ class Joueur():
         self.chemins = 0
         self.coutChemins = 10
         self.nbOuvrier = 1
-        self.entiteAReset = list()
+        self.entiteResetDeplacement = list()
+        self.entiteResetCombat = list()
 
     def setVilleDepart(self, ville):
         self.villeDepart = ville
         
-    def addEntiteReset(self, entite):
-        self.entiteAReset.append(entite)    
+    def addEntiteResetDeplacement(self, entite):
+        self.entiteResetDeplacement.append(entite)
+        
+    def addEntiteResetCombat(self, entite):
+        self.entiteResetCombat.append(entite)
+        
+    def getNbRessourceTour(self):
+        return 50

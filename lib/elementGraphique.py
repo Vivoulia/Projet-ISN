@@ -98,20 +98,46 @@ class Entite(ElementJouable):
       
    def canMoove(self):
       return self.moove
+
+   def setCaanAttak(self, canAttack):
+      if canAttack:
+         self.canAttack = True
+      else:
+         self.canAttack = False
+         self.joueur.addEntiteResetCombat(self)
    
    def setMoove(self, canMoove):
       if canMoove:
          self.moove = True
       else:
          self.moove = False
-         self.joueur.addEntiteReset(self)
+         self.joueur.addEntiteResetDeplacement(self)
          
       
 class Epeiste(Entite):
    def __init__(self, x, y, joueur, parent, textureName = "epeiste.gif", textureDesc="testTuile2D.gif"):
       Entite.__init__(self,x, y, joueur, parent, textureName, textureDesc)
+      self.vie = 100
+      self.pa = 10
+      self.attaque = 3
+
+
+class Cavalier(Entite):
+   def __init__(self, x, y, joueur, parent, textureName = "epeiste.gif", textureDesc="testTuile2D.gif"):
+      Entite.__init__(self,x, y, joueur, parent, textureName, textureDesc)
+      self.vie = 100
       self.pa = 6
+      self.attaque = 3
+
+
+class Archet(Entite):
+   def __init__(self, x, y, joueur, parent, textureName = "epeiste.gif", textureDesc="testTuile2D.gif"):
+      Entite.__init__(self,x, y, joueur, parent, textureName, textureDesc)
+      self.vie = 100
+      self.pa = 3
+      self.attaque = 3
       
+
 class Batiment(ElementJouable):
    def __init__(self,x, y, joueur, parent, textureName="erreur.gif", textureDesc="testTuile2D.gif", cheminTexture = "texture/Batiment/", cheminDesc = "texture/Batiment/"):
       ElementJouable.__init__(self, x, y, parent, textureName, textureDesc, cheminTexture, cheminDesc)
