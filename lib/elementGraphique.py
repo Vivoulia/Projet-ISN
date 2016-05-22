@@ -95,11 +95,13 @@ class Entite(ElementJouable):
       self.level = 0
       self.moove = True
       self.canAttack = True
+      self.barreVieContourTkId = None
+      self.barreVieTkId = None
       
    def canMoove(self):
       return self.moove
 
-   def setCaanAttak(self, canAttack):
+   def setCanAttack(self, canAttack):
       if canAttack:
          self.canAttack = True
       else:
@@ -117,7 +119,8 @@ class Entite(ElementJouable):
 class Epeiste(Entite):
    def __init__(self, x, y, joueur, parent, textureName = "epeiste.gif", textureDesc="testTuile2D.gif"):
       Entite.__init__(self,x, y, joueur, parent, textureName, textureDesc)
-      self.vie = 100
+      self.vieDepart = 100
+      self.vie = self.vieDepart
       self.pa = 10
       self.attaque = 3
 
@@ -125,7 +128,8 @@ class Epeiste(Entite):
 class Cavalier(Entite):
    def __init__(self, x, y, joueur, parent, textureName = "epeiste.gif", textureDesc="testTuile2D.gif"):
       Entite.__init__(self,x, y, joueur, parent, textureName, textureDesc)
-      self.vie = 100
+      self.vieDepart = 100
+      self.vie = self.vieDepart
       self.pa = 6
       self.attaque = 3
 
@@ -133,7 +137,8 @@ class Cavalier(Entite):
 class Archet(Entite):
    def __init__(self, x, y, joueur, parent, textureName = "epeiste.gif", textureDesc="testTuile2D.gif"):
       Entite.__init__(self,x, y, joueur, parent, textureName, textureDesc)
-      self.vie = 100
+      self.vieDepart = 100
+      self.vie = self.vieDepart
       self.pa = 3
       self.attaque = 3
       

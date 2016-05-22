@@ -65,13 +65,38 @@ class GameZone(ZoneAffichage):
    
       
    def afficherBarreDeVie(self, entite):
-      x = entite.x-100
-      y = entite.y-100
-      self.tkId = self.create_rectangle(x, y, x+30, y+10, fill="green")   
+      x = entite.x + 50
+      y = entite.y - 80
+      vie_x = ((entite.vie)/entite.vieDepart)*60 
+      if entite.barreVieTkId == None:
+         #La barre de vie n'a pas encore été initialisé
+         entite.barreVieContourTkId = self.create_rectangle(x, y, x+60, y+10)
+         if entite.vie < entite.vieDepart//4:
+            entite.barreVieTkId = self.create_rectangle(x, y, round(x+vie_x), y+10, fill="red")   
+         elif entite.vie < entite.vieDepart//2:
+            entite.barreVieTkId = self.create_rectangle(x, y, round(x+vie_x), y+10, fill="orange")
+         else:
+            entite.barreVieTkId = self.create_rectangle(x, y, round(x+vie_x), y+10, fill="green")
+      else:
+         #on met a jour les coordonnées de la barre de vie
+         if entite.vie < entite.vieDepart//4:
+            self.itemconfigure(entite.barreVieTkId, fill="red")   
+         elif entite.vie < entite.vieDepart//2:
+            self.itemconfigure(entite.barreVieTkId, fill="orange")
+         else:
+            self.itemconfigure(entite.barreVieTkId, fill="green")         
+         self.coords(entite.barreVieContourTkId, x, y, x+60, y+10)
+         self.coords(entite.barreVieTkId, x, y, round(x+vie_x), y+10)
       
    def supprimerElement(self, element):
       self.delete(element.tkId)
       del element
+   
+   def supprimerEntite(self, entite):
+      self.delete(entite.tkId)
+      self.delete(entite.barreVieContourTkId)
+      self.delete(entite.barreVieTkId)
+      del element   
    
    def selectTuile(self, selection, texture):
       """AFFICHE LES TUILES ENVOYE DANS UNE LIST EN PARAMETRE"""
@@ -147,11 +172,9 @@ class GameZone(ZoneAffichage):
          i = 0
          closed = list()
          closed.append(tuile)
-         print("nb Tuile a parcourir:", entite[0].pa*(2*(entite[0].pa + 1)))
          while not(Q.empty()) and i < entite[0].pa*(2*(entite[0].pa + 1)):
             n = Q.get()
             territoireVoisin, nbVoisin = self.getVoisinComptage(n)
-            print("On incremente i de : ", nbVoisin)
             i += nbVoisin
             for iVoisin in territoireVoisin:
                if not(iVoisin in closed):
@@ -164,7 +187,6 @@ class GameZone(ZoneAffichage):
          self.selectionType = "Entite"
          self.selectTuile(self.selectedTuile, "case selection entite.gif")
          self.selectionType = "Entite"
-         print("nbTuileParcouru :", i)
 
    def translateToIsoScroll(self, x, y):
       """TRANSLATE DES COORDONNEES X, Y EN COORDS ISOMETRIQUE"""
@@ -221,6 +243,9 @@ class GameZone(ZoneAffichage):
       tuile.addEntite(self.currentEntite)
       self.currentEntite.parent = tuile
       self.currentEntite.setMoove(False)
+      self.currentEntite.x = tuile.x
+      self.currentEntite.y = tuile.y
+      self.afficherBarreDeVie(self.currentEntite)
 
    def tuileExiste(self, tuile):
       if (tuile.i < ligne and tuile.i > 0) and (tuile.j < colonne and tuile.j > 0):
@@ -504,13 +529,18 @@ class Fenetre():
          #Il y a des entités sur la tuile
          entite = self.carte.terrain[x][y].getEntite()
          if entite[0].joueur == self.gameController.getJoueurActif():
+            #L'entite appartiennent au joueur actif
             self.gameZone.currentEntite = entite[0]
             self.gameZone.afficherBarreDeVie(entite[0])
             self.gameZone.selectTerritoireEntite(self.carte.terrain[x][y])
          else:
+            #L'entite sur la tuile est ennemi
             if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
+               #On regarde si elle est dans les cases selectionnés, car dans ce cas on peut l'attaquer
                self.gameController.combat(self.gameZone.currentEntite, entite[0], self.gameZone)
-               self.gameZone.selectTerritoireEntite(self.carte.terrain[x][y])
+               if len(self.carte.terrain[x][y].getEntite()) > 0:
+                  self.gameZone.afficherBarreDeVie(entite[0])
+               self.gameZone.afficherBarreDeVie(self.gameZone.currentEntite)
             else:
                if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
                   print("a l'attaque")
