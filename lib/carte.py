@@ -34,7 +34,7 @@ class Carte():
             x = 590 + (i - (j+1)) * (TUILE_X/2)
             y = 100 + (i + (j+1)) * (TUILE_Y/2)
             self.terrain[i][j] = tuile.Tuile(x, y, i ,j)
-            if i<=2 or j<=2 or i>=LIGNE-3 or j>=COLONNE-3 or i + j > COLONNE+15  or i + j < COLONNE-20:
+            if i<=2 or j<=2 or i>=LIGNE-3 or j>=COLONNE-3 or i + j > COLONNE+13  or i + j < COLONNE-18:
                self.terrain[i][j].setTerrainVide()
             elif i < marge or j < marge or i >= LIGNE-marge or j >= COLONNE-marge or (i+j > COLONNE+14-marge) or (i + j < COLONNE-19+marge):
                self.terrain[i][j].setTerrainMontagne()

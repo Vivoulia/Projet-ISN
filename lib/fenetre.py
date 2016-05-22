@@ -622,13 +622,23 @@ class Fenetre():
                   self.gameController.getJoueurActif().listAmelioration.append("chemin")
                   print(self.gameController.getJoueurActif().listAmelioration)
                   self.userInterface.delete(iBouton.tkId)
-                  self.userInterface.delete(iBouton.tkIdText)                
+                  self.userInterface.delete(iBouton.tkIdText)
                elif iBouton == self.userInterface.boutonAmeliorationCaserne:
                   self.gameController.getJoueurActif().listAmelioration.append("caserne")
                   print(self.gameController.getJoueurActif().listAmelioration)
                   self.userInterface.delete(iBouton.tkId)
                   self.userInterface.delete(iBouton.tkIdText)
             else :
+               if self.gameController.getJoueurActif().nbRessource >= iBouton.cout:
+                  self.gameController.getJoueurActif().nbRessource -= iBouton.cout
+                  element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
+                  print(element)
+                  if element != None:
+                     self.gameZone.afficherElementIndex(element)
+                  self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
+                  self.gameZone.selectTerritoire(self.gameZone.currentCity)
+                  self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
+
                element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
                print(element)
                if element != None:
