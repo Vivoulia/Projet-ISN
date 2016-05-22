@@ -66,6 +66,7 @@ class Tuile():
    def addBatimentChamp(self, camp):
       self.batiment = elementGraphique.Champ(self.x, self.y, camp, self)
       camp.champs += 1
+      camp.addBatimentAnimation(self.batiment)
       return self.batiment
 
    def addBatimentScierie(self, camp):
@@ -100,6 +101,19 @@ class Tuile():
 
    def addDecorForet(self):
       self.decor.append(elementGraphique.Foret(self.x, self.y, self))
+   
+   def addDecorBle(self):
+      ble = elementGraphique.Ble(self.x, self.y, self)
+      self.decor.append(ble)
+      return ble
+   
+   def addDecorBle2(self):
+      ble2 = elementGraphique.Ble2(self.x, self.y, self)
+      self.decor.append(ble2)
+      return ble2
+      
+   def removeDecor(self, decor):
+      self.decor.remove(decor)
    
    def addEntiteEpeiste(self, camp):
       self.entite.append(elementGraphique.Epeiste(self.x, self.y, camp, self))
