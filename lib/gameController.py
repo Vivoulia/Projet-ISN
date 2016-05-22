@@ -13,7 +13,10 @@ class GameController():
       """FONCTION QUI ORGANISE LA FIN DU TOUR"""
       print("fin du tour")
       self.etat = "Fin"
-      self.joueurActif.nbRessource += self.joueurActif.getNbRessourceTour()
+      if self.joueurActif.nbRessource + self.joueurActif.getNbRessourceTour() <= self.joueurActif.nbMaxRessource :
+         self.joueurActif.nbRessource += self.joueurActif.getNbRessourceTour()
+      else:
+         self.joueurActif.nbRessource = self.joueurActif.nbMaxRessource
       print(self.joueurActif.nbRessource)
       if self.joueurActif == self.joueur1:
          self.joueurActif = self.joueur2

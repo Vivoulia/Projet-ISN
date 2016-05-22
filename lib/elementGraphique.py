@@ -194,7 +194,7 @@ class Ferme(BatimentSpecial):
 class Moulin(Batiment):
    def __init__(self, x, y, joueur, parent):
       Batiment.__init__(self, x, y, joueur, parent, textureName = "moulin.gif", textureDesc="testTuile2D.gif")
-      self.production = 10
+      self.production = 0
       self.description = "meunieeeeeer, tu dooooors"
       self.nom = "Moulin"
 
@@ -202,7 +202,7 @@ class Champ(Batiment):
    def __init__(self, x, y, joueur, parent):
       joueur.champs += 1
       Batiment.__init__(self, x, y, joueur, parent, textureName = "champ.gif", textureDesc="testTuile2D.gif")
-      self.production = 10
+      self.production = 30
       self.description = "Cool pour planter du ble, des bettraves, des carottes ou de la beuh"
       self.nom = "Champ"
       self.etatAnimation = 0
@@ -216,14 +216,15 @@ class Mine(Batiment):
    def __init__(self, x, y, joueur, parent):
       joueur.mines += 1
       Batiment.__init__(self, x, y, joueur, parent, textureName = "mine.gif", textureDesc="testTuile2D.gif")
-      self.production = 10
+      self.production = 20
       self.description = "Vous appelez ca une mine ? UNE MINE ?"
       self.nom = "Mine"
       
 class Entrepot(Batiment):
    def __init__(self, x, y, joueur, parent):  
       Batiment.__init__(self, x, y, joueur, parent, textureName = "entrepot.gif", textureDesc="testTuile2D.gif")
-      self.stockage = 10
+      joueur.nbMaxRessource += 100
+      print(joueur.nbMaxRessource)
       self.description = "Pour ranger des trucs qui prennent trop de place"
       self.nom = "Entrepot"
 
@@ -262,6 +263,7 @@ class Caserne(Batiment):
 class Chemin(Batiment):
    def __init__(self, x, y, joueur, parent):
          Batiment.__init__(self, x, y, joueur, parent, textureName = "chemin.gif", textureDesc="testTuile2D.gif")
+         joueur.coutChemin += 5
          self.description = "alignement de petits cailloux pour retrouver son chemin"
          self.nom = "Chemin"
 
@@ -328,14 +330,14 @@ class Bouton(ElementGraphique):
 class BoutonOuvrier(Bouton):
    def __init__(self, textureName="bouton_ouvrier.gif"):
       Bouton.__init__(self, textureName)
-      self.cout = 10
+      self.cout = 20
       self.categorie = "amelioration"
       self.description = "recruter un ouvrier"
 
 class BoutonFerme(Bouton):
    def __init__(self, textureName="bouton_ferme.gif"):
       Bouton.__init__(self, textureName)
-      self.cout = 10
+      self.cout = 30
       self.categorie = "construction"
       self.description = "Construire une ferme"
    def event(self, tuile, joueur):
@@ -345,7 +347,7 @@ class BoutonFerme(Bouton):
 class BoutonForge(Bouton):
    def __init__(self, textureName="bouton_forge.gif"):
       Bouton.__init__(self, textureName)
-      self.cout = 10
+      self.cout = 20
       self.categorie = "construction"
       self.description = "Construire une forge"
    def event(self, tuile, joueur):
@@ -365,7 +367,7 @@ class BoutonMoulin(Bouton):
 class BoutonChemin(Bouton):
    def __init__(self, textureName="bouton_chemin.gif"):
       Bouton.__init__(self, textureName)
-      self.cout = 10
+      self.cout = 5
       self.categorie = "construction"
       self.description = "Construire un chemin"
    def event(self, tuile, joueur):
@@ -376,7 +378,7 @@ class BoutonChemin(Bouton):
 class BoutonChamp(Bouton):
    def __init__(self, textureName="bouton_champ.gif"):
       Bouton.__init__(self, textureName)
-      self.cout = 10
+      self.cout = 30
       self.categorie = "construction"
       self.description = "Construire un champ"
    def event(self, tuile, joueur):
@@ -387,7 +389,7 @@ class BoutonChamp(Bouton):
 class BoutonEntrepot(Bouton):
    def __init__(self, textureName="bouton_entrepot.gif"):
       Bouton.__init__(self, textureName)
-      self.cout = 10
+      self.cout = 20
       self.categorie = "construction"
       self.description = "Construire un entrepot"
    def event(self, tuile, joueur):
@@ -398,7 +400,7 @@ class BoutonEntrepot(Bouton):
 class BoutonMine(Bouton):
    def __init__(self, textureName="bouton_mine.gif"):
       Bouton.__init__(self, textureName)
-      self.cout = 10
+      self.cout = 40
       self.categorie = "construction"
       self.description = "Construire une mine"
       
@@ -409,7 +411,7 @@ class BoutonMine(Bouton):
 class BoutonScierie(Bouton):
    def __init__(self, textureName="bouton_scierie.gif"):
       Bouton.__init__(self, textureName)
-      self.cout = 10
+      self.cout = 5
       self.categorie = "construction"
       self.description = "Construire une scierie"
    
@@ -421,7 +423,7 @@ class BoutonScierie(Bouton):
 class BoutonTour(Bouton):
    def __init__(self, textureName="bouton_tour.gif"):
       Bouton.__init__(self, textureName)
-      self.cout = 10
+      self.cout = 50
       self.categorie = "construction"
       self.description = "Construire une tour"
    
@@ -433,7 +435,7 @@ class BoutonTour(Bouton):
 class BoutonCaserne(Bouton):
    def __init__(self, textureName="bouton_caserne.gif"):
       Bouton.__init__(self, textureName)
-      self.cout = 10
+      self.cout = 50
       self.categorie = "construction"
       self.description = "Construire une caserne"
 
@@ -444,7 +446,7 @@ class BoutonCaserne(Bouton):
 class BoutonRecrutementEpeiste(Bouton):
    def __init__(self, textureName="bouton_recrutement_epeiste.gif"):
       Bouton.__init__(self, textureName)
-      self.cout = 10
+      self.cout = 60
       self.categorie = "recrutement"
       self.description = "Recruter un epeiste"
 
@@ -455,16 +457,16 @@ class BoutonRecrutementEpeiste(Bouton):
 class BoutonAmeliorationCaserne(Bouton):
    def __init__(self, textureName="bouton_amelioration_caserne.gif"):
       Bouton.__init__(self, textureName)
-      self.cout = 10
+      self.cout = 100
       self.categorie = "amelioration"
       self.description = "Debloque la caserne"
 
-class BoutonAmeliorationChemin(Bouton):
-   def __init__(self, textureName="bouton_amelioration_chemin.gif"):
+class boutonAmeliorationTour(Bouton):
+   def __init__(self, textureName="bouton_amelioration_tour.gif"):
       Bouton.__init__(self, textureName)
-      self.cout = 10
+      self.cout = 20
       self.categorie = "amelioration"
-      self.description = "Debloque les chemins"
+      self.description = "Debloque les tours"
 
 
 class FondRessource(ElementGraphique):

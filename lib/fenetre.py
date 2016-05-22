@@ -261,9 +261,9 @@ class UserInterface(Canvas):
       self.boutonOuvrier = elementGraphique.BoutonOuvrier()
       self.boutonRecrutementEpeiste = elementGraphique.BoutonRecrutementEpeiste()
       self.boutonAmeliorationCaserne = elementGraphique.BoutonAmeliorationCaserne()
-      self.boutonAmeliorationChemin = elementGraphique.BoutonAmeliorationChemin()
+      self.boutonAmeliorationTour = elementGraphique.boutonAmeliorationTour()
       self.boutonListe.append(self.boutonAmeliorationCaserne)
-      self.boutonListe.append(self.boutonAmeliorationChemin)
+      self.boutonListe.append(self.boutonAmeliorationTour)
       self.boutonListe.append(self.boutonTour)
       self.boutonListe.append(self.boutonChamp)
       self.boutonListe.append(self.boutonEntrepot)
@@ -293,9 +293,9 @@ class UserInterface(Canvas):
       if not "caserne" in self.fenetre.gameController.getJoueurActif().listAmelioration:
          self.boutonAmeliorationCaserne.setIndice(1)
          self.afficherBouton(self.boutonAmeliorationCaserne)
-      if not "chemin" in self.fenetre.gameController.getJoueurActif().listAmelioration:
-         self.boutonAmeliorationChemin.setIndice(2)
-         self.afficherBouton(self.boutonAmeliorationChemin)         
+      elif not "tour" in self.fenetre.gameController.getJoueurActif().listAmelioration:
+         self.boutonAmeliorationTour.setIndice(1)
+         self.afficherBouton(self.boutonAmeliorationTour)         
 
    def affichageBouton(self, tuile):
       if tuile.getBatiment() == None:
@@ -311,8 +311,8 @@ class UserInterface(Canvas):
                self.boutonFerme.setIndice(1)
                self.boutonEntrepot.setIndice(2)
                self.boutonForge.setIndice(3)
-               self.boutonTour.setIndice(4)
-               self.boutonCaserne.setIndice(5)
+               self.boutonCaserne.setIndice(4)
+               self.boutonTour.setIndice(5)
                #if "militaire" in self.fenetre.gameController.getJoueurActif().listAmelioration :
                  # self.boutonCaserne.setIndice(3)
                 #  self.boutonChemin.setIndice(4)
@@ -322,10 +322,12 @@ class UserInterface(Canvas):
                self.afficherBouton(self.boutonFerme)
                self.afficherBouton(self.boutonForge)
                self.afficherBouton(self.boutonEntrepot)
-               self.afficherBouton(self.boutonChemin)
                joueurActif = self.fenetre.gameController.getJoueurActif()
                if "caserne" in joueurActif.listAmelioration :
-                  self.afficherBouton(self.boutonCaserne)
+                  self.afficherBouton(self.boutonCaserne)               
+                  if "tour" in joueurActif.listAmelioration :
+                     self.afficherBouton(self.boutonChemin)
+               
          elif self.fenetre.gameZone.currentCity.getBatiment().getNom() == "Ferme":
             if tuile.getTerrain().getNom() == "Foret":
                self.boutonScierie.setIndice(0)
@@ -588,8 +590,8 @@ class Fenetre():
                if iBouton == self.userInterface.boutonOuvrier:
                   self.gameController.getJoueurActif().nbOuvrier += 1
                   print (self.gameController.getJoueurActif().nbOuvrier)
-               elif  iBouton == self.userInterface.boutonAmeliorationChemin:
-                  self.gameController.getJoueurActif().listAmelioration.append("chemin")
+               elif  iBouton == self.userInterface.boutonAmeliorationTour:
+                  self.gameController.getJoueurActif().listAmelioration.append("tour")
                   print(self.gameController.getJoueurActif().listAmelioration)
                   self.userInterface.delete(iBouton.tkId)
                   self.userInterface.delete(iBouton.tkIdText)
@@ -609,14 +611,16 @@ class Fenetre():
                   self.gameZone.selectTerritoire(self.gameZone.currentCity)
                   self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
 
-               element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
-               print(element)
-               if element != None:
-                  self.gameZone.afficherElementIndex(element)
-               self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
-               self.gameZone.selectTerritoire(self.gameZone.currentCity)
-               self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
-      self.ressourceInterFace.actualiser()
+                  element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
+                  print(element)
+                  if element != None:
+                     self.gameZone.afficherElementIndex(element)
+                  self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
+                  self.gameZone.selectTerritoire(self.gameZone.currentCity)
+                  self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
+                  self.ressourceInterFace.actualiser()
+               else :
+                  print("pas assez de thunes")
 
    def onKeyPress(self, event):
       """METHODE APPELE QUAND UNE TOUCHE DU CLAVIER EST ENFONCE"""
