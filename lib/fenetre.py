@@ -77,7 +77,7 @@ class GameZone(ZoneAffichage):
       """AFFICHE LES TUILES ENVOYE DANS UNE LIST EN PARAMETRE"""
       fileName="texture/" + texture
       self.textureNormal = PhotoImage(file = fileName)
-      
+
       fileName2="texture/attaquer.gif"
       self.textureSoldatEnnemi = PhotoImage(file = fileName2)      
       for iTuile in range(len(selection)):
@@ -136,7 +136,7 @@ class GameZone(ZoneAffichage):
                self.selectedTuile.append(iVoisin)
       self.selectTuile(self.selectedTuile, "case selection.gif")
       self.selectionType = "Batiment"
-      
+
    def selectTerritoireEntite(self, tuile):
       """SELECTIONNE LES TERRITOIRES Q'UNE ENTITE PEUT PARCOURIR ET AFFICHE A LA FENETRE LA ZONE DE SELECTION"""
       self.deselect()
@@ -194,7 +194,7 @@ class GameZone(ZoneAffichage):
                voisin.append(self.fenetre.carte.terrain[tuile.i+i][tuile.j])
                voisin.append(self.fenetre.carte.terrain[tuile.i][tuile.j+i])
       return voisin
-   
+
    def getVoisinComptage(self, tuile):
       """RENVOIE LES VOISINS D'UNE TUILE EN COMPTANT LES VOISINS THEORIQUENT"""
       voisin = list()
@@ -211,7 +211,7 @@ class GameZone(ZoneAffichage):
                nbVoisin += 2
                print("on passe ici")
       return voisin, nbVoisin
-   
+
    def moveUnitTo(self, tuile):
       self.coords(self.currentEntite.tkId, tuile.x, tuile.y)
       i, j = self.translateToIso(tuile.x, tuile.y)
@@ -221,23 +221,26 @@ class GameZone(ZoneAffichage):
       tuile.addEntite(self.currentEntite)
       self.currentEntite.parent = tuile
       self.currentEntite.setMoove(False)
-      
+
    def tuileExiste(self, tuile):
       if (tuile.i < ligne and tuile.i > 0) and (tuile.j < colonne and tuile.j > 0):
          return True
       else:
          return False
 
+<<<<<<< HEAD
    
+=======
+>>>>>>> origin/master
 
 class UserInterface(Canvas):
    def __init__(self, widgetParent, fenetre, background, width, height):
       Canvas.__init__(self, widgetParent, bg=background, width=width, height=height)
       self.parent = widgetParent
       self.fenetre = fenetre
-      
+
       """ CREATION DE LA ZONE D'INFORMATION """
-      
+
       self.descriptionTexte = StringVar()
       self.descriptionTexte.set("Aucune Tuile")
       self.description = Label(self.parent, textvariable=self.descriptionTexte)
@@ -248,7 +251,7 @@ class UserInterface(Canvas):
       self.create_image(0,996, image=self.fondDescription, anchor=SW)
 
       """ BOUTON """
-      
+
       self.boutonListe = list()
       self.boutonTour = elementGraphique.BoutonTour()
       self.boutonChamp = elementGraphique.BoutonChamp()
@@ -262,6 +265,10 @@ class UserInterface(Canvas):
       self.boutonForge = elementGraphique.BoutonForge()
       self.boutonOuvrier = elementGraphique.BoutonOuvrier()
       self.boutonRecrutementEpeiste = elementGraphique.BoutonRecrutementEpeiste()
+      self.boutonAmeliorationCaserne = elementGraphique.BoutonAmeliorationCaserne()
+      self.boutonAmeliorationChemin = elementGraphique.BoutonAmeliorationChemin()
+      self.boutonListe.append(self.boutonAmeliorationCaserne)
+      self.boutonListe.append(self.boutonAmeliorationChemin)
       self.boutonListe.append(self.boutonTour)
       self.boutonListe.append(self.boutonChamp)
       self.boutonListe.append(self.boutonEntrepot)
@@ -274,7 +281,8 @@ class UserInterface(Canvas):
       self.boutonListe.append(self.boutonMoulin)
       self.boutonListe.append(self.boutonForge)
       self.boutonListe.append(self.boutonFerme)
-      
+
+
    def afficherBouton(self, element):
       """AFFICHE UN OBJET DE TYPE ELEMENT GRAPHIQUE ENVOYE EN PARAMETRE"""
       tkId = self.create_image(element.x, element.y, image=element.getTexture(), anchor=SW)
@@ -283,60 +291,76 @@ class UserInterface(Canvas):
       element.setTkIdText(tkIdText)
       self.tag_bind(tkId, '<ButtonPress-1>', self.fenetre.onBoutonClique)  
       self.update()
-   
-   def affichegeBoutonMairie(self, tuile):
+
+   def affichageBoutonMairie(self):
       self.boutonOuvrier.setIndice(0)
-      self.afficherBouton(self.boutonOuvrier)  
-   
-   def affichageBoutonChantier(self, tuile):
+      self.afficherBouton(self.boutonOuvrier)
+      if not "caserne" in self.fenetre.gameController.getJoueurActif().listAmelioration:
+         self.boutonAmeliorationCaserne.setIndice(1)
+         self.afficherBouton(self.boutonAmeliorationCaserne)
+      if not "chemin" in self.fenetre.gameController.getJoueurActif().listAmelioration:
+         self.boutonAmeliorationChemin.setIndice(2)
+         self.afficherBouton(self.boutonAmeliorationChemin)         
+
+   def affichageBouton(self, tuile):
       if tuile.getBatiment() == None:
-         if tuile.getTerrain().getNom() == "Foret":
-            self.boutonScierie.setIndice(0)
-            self.afficherBouton(self.boutonScierie)
-         elif tuile.getTerrain().getNom() == "Montagne":
-            self.boutonMine.setIndice(0)
-            self.afficherBouton(self.boutonMine)
-         elif tuile.getTerrain().getNom() == "Plaine":
-            self.boutonChemin.setIndice(0)
-            self.boutonFerme.setIndice(1)
-            self.boutonEntrepot.setIndice(2)
-            self.boutonForge.setIndice(3)
-            self.boutonTour.setIndice(4)
-            self.boutonCaserne.setIndice(5)
-            self.boutonMoulin.setIndice(6)
-            #if "militaire" in self.fenetre.gameController.getJoueurActif().listAmelioration :
-              # self.boutonCaserne.setIndice(3)
-             #  self.boutonChemin.setIndice(4)
-             #  self.afficherBouton(self.boutonCaserne)
-            #else:
-            self.afficherBouton(self.boutonCaserne)
-            self.afficherBouton(self.boutonTour)
-            self.afficherBouton(self.boutonFerme)
-            self.afficherBouton(self.boutonMoulin)
-            self.afficherBouton(self.boutonForge)
-            self.afficherBouton(self.boutonEntrepot)
-            self.afficherBouton(self.boutonChemin)
-            joueurActif = self.fenetre.gameController.getJoueurActif()
-            if "militaire" in joueurActif.listAmelioration :
-               self.afficherBouton(self.boutonCaserne)
+         if self.fenetre.gameZone.currentCity.getBatiment().getNom() == "Mairie Ressource":
+            if tuile.getTerrain().getNom() == "Foret":
+               self.boutonScierie.setIndice(0)
+               self.afficherBouton(self.boutonScierie)
+            elif tuile.getTerrain().getNom() == "Montagne":
+               self.boutonMine.setIndice(0)
+               self.afficherBouton(self.boutonMine)
+            elif tuile.getTerrain().getNom() == "Plaine":
+               self.boutonChemin.setIndice(0)
+               self.boutonFerme.setIndice(1)
+               self.boutonEntrepot.setIndice(2)
+               self.boutonForge.setIndice(3)
+               self.boutonTour.setIndice(4)
+               self.boutonCaserne.setIndice(5)
+               #if "militaire" in self.fenetre.gameController.getJoueurActif().listAmelioration :
+                 # self.boutonCaserne.setIndice(3)
+                #  self.boutonChemin.setIndice(4)
+                #  self.afficherBouton(self.boutonCaserne)zzz
+               #else:
+               self.afficherBouton(self.boutonTour)
+               self.afficherBouton(self.boutonFerme)
+               self.afficherBouton(self.boutonForge)
+               self.afficherBouton(self.boutonEntrepot)
+               self.afficherBouton(self.boutonChemin)
+               joueurActif = self.fenetre.gameController.getJoueurActif()
+               if "caserne" in joueurActif.listAmelioration :
+                  self.afficherBouton(self.boutonCaserne)
+         elif self.fenetre.gameZone.currentCity.getBatiment().getNom() == "Ferme":
+            if tuile.getTerrain().getNom() == "Foret":
+               self.boutonScierie.setIndice(0)
+               self.afficherBouton(self.boutonScierie)
+            elif tuile.getTerrain().getNom() == "Montagne":
+               self.boutonMine.setIndice(0)
+               self.afficherBouton(self.boutonMine) 
+            elif tuile.getTerrain().getNom() == "Plaine":
+               self.boutonChamp.setIndice(0)
+               self.boutonMoulin.setIndice(1)
+               self.afficherBouton(self.boutonChamp)
+               self.afficherBouton(self.boutonMoulin)
       else:
          if tuile.getBatiment().getNom() == "Caserne":
             self.boutonRecrutementEpeiste.setIndice(0)
-            self.afficherBouton(self.boutonRecrutementEpeiste)
+            self.afficherBouton(self.boutonRecrutementEpeiste)           
          
       
    
    def affichageInformation(self):
       """ METHODE QUI AFFICHE LES INFORMATION SUR UNE CASE """
       pass
-   
+
    def clear(self):
       for iBouton in self.boutonListe:
          self.delete(iBouton.tkId)
          self.delete(iBouton.tkIdText)
 
 class ArbreCompetence(Canvas):
-  
+
    def __init__(self, widgetParent, fenetre, background, width, height):
       Canvas.__init__(self, widgetParent, bg=background, width=width, height=height)
       self.fenetre = fenetre
@@ -350,6 +374,7 @@ class ArbreCompetence(Canvas):
       self.availableList.append(self.technologie)
       self.availableList.append(self.magie)
       self.afficherArbre()
+      
 
    def afficherArbre(self):
       print("affichage arbre de competence")
@@ -377,7 +402,12 @@ class RessourceInterFace(Canvas):
       self.textNbRessource = self.create_text(100,10, font='Helvetica 12', text=self.textNbRessourceVar.get())
       self.textProduction = self.create_text(200,10, font='Helvetica 12', text="Production Par tour") 
       print("affichage de la barre de ressources")
+<<<<<<< HEAD
       
+=======
+      self.afficherElement(fondRessource)
+
+>>>>>>> origin/master
    def afficherElement(self, element):
       """AFFICHE UN OBJET DE TYPE ELEMENT GRAPHIQUE ENVOYE EN PARAMETRE"""
       tkId = self.create_image(element.x, element.y, image=element.getTexture(), anchor=SW) 
@@ -388,11 +418,12 @@ class RessourceInterFace(Canvas):
       pass
 
 class Fenetre():
-   def __init__(self):
+   def __init__(self, gameController):
       self.windows = Tk()
       width, height = self.windows.winfo_screenwidth(), self.windows.winfo_screenheight()
       self.windows.bind('<KeyPress>', self.onKeyPress)
       self.windows.bind('<MouseWheel>', self.onKeyPress)
+      self.gameController = gameController
       
       """CREATTION DE LA ZONE DE JEU (canvas)"""
 
@@ -411,6 +442,7 @@ class Fenetre():
       self.zone_description.grid(column=1, row=1)
       self.finTour = Button(self.zone_description, text="Fin du Tour")
       self.finTour.grid(column=0, row=1)
+      self.finTour.config(command=self.gameController.finTour)
       
       """CREATION DE LA ZONE RESSOURCE"""
       
@@ -431,7 +463,7 @@ class Fenetre():
       """VARIABLE"""
       
       self.carte = None
-      self.gameController = None
+      #self.gameController = None
       self.currentTuile = None
       self.selectedTuile = list() #List contenant les tuiles selectionné par un clique
       self.selectedTkId = list() #List contenant les TkId selectionné par un clique
@@ -445,9 +477,9 @@ class Fenetre():
    def setGameController(self, gameController):
       self.gameController = gameController
       self.finTour.config(command=self.gameController.finTour)
-      
+
    """   EVENT  """
-   
+
    def onTuileClick(self, event):
       x, y = self.gameZone.translateToIsoScroll(event.x, event.y)
       print(self.carte.terrain[x][y].i, self.carte.terrain[x][y].j)
@@ -458,12 +490,19 @@ class Fenetre():
          entite = self.carte.terrain[x][y].getEntite()
          if entite[0].joueur == self.gameController.getJoueurActif():
             self.gameZone.currentEntite = entite[0]
+<<<<<<< HEAD
             self.gameZone.afficherBarreDeVie(entite[0])
             self.gameZone.selectTerritoireEntite(self.carte.terrain[x][y])
          else:
             if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
                self.gameController.combat(self.gameZone.currentEntite, entite[0], self.gameZone)
       
+=======
+            self.gameZone.selectTerritoireEntite(self.carte.terrain[x][y])
+         else:
+            if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
+               print("a l'attaque")
+>>>>>>> origin/master
       elif self.carte.terrain[x][y].getBatiment() != None:
          #Il y a un batiment sur la tuile
          if self.gameController.getJoueurActif() == self.carte.terrain[x][y].getBatiment().joueur:
@@ -472,10 +511,15 @@ class Fenetre():
                self.gameZone.currentCity = self.carte.terrain[x][y]
                #on met en selection les zones constructibles
                self.gameZone.selectTerritoireMairie(self.carte.terrain[x][y])
-               
+               self.userInterface.affichageBoutonMairie()
+            elif self.carte.terrain[x][y].getBatiment().getNom() == "Ferme":
+               #si le batiment est une ferme
+               self.gameZone.currentCity = self.carte.terrain[x][y]
+               #on met en selection les zones constructibles
+               self.gameZone.selectTerritoireMairie(self.carte.terrain[x][y])               
             else:
                self.userInterface.clear()
-               self.userInterface.affichageBoutonChantier(self.carte.terrain[x][y])
+               self.userInterface.affichageBouton(self.carte.terrain[x][y])
          else:
             pass
             
@@ -483,9 +527,9 @@ class Fenetre():
       else:
          if self.gameZone.selectionType == "Batiment":
             if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
-               #Affichage des boutons 
+               #Affichage des boutons
                self.userInterface.clear()
-               self.userInterface.affichageBoutonChantier(self.carte.terrain[x][y])
+               self.userInterface.affichageBouton(self.carte.terrain[x][y])
             elif len(self.gameZone.selectedTkId) != 0:
                self.gameZone.deselect()
                self.userInterface.clear()
@@ -502,7 +546,7 @@ class Fenetre():
             elif len(self.gameZone.selectedTkId) != 0:
                self.gameZone.deselect()
                self.userInterface.clear()   
-            
+
    def onArbreClick(self, event):
       """ CLIC DANS L'ARBRE DES COMPETENCES """
       item = event.widget.find_closest(event.x, event.y)
@@ -521,24 +565,36 @@ class Fenetre():
             joueurActif.listAmelioration.append(upgrade)
             print(joueurActif.listAmelioration)
       self.gameZone.update()
-   
+
    def onBoutonClique(self, event):
       """ EVENEMENT CLIQUE D'UNE IMAGE SUR LE CANVAS USERINTERFACE """
       screenX = self.userInterface.canvasx(event.x)
       screenY  = self.userInterface.canvasy(event.y)
       item = event.widget.find_closest(screenX, screenY)
       for iBouton in self.userInterface.boutonListe:
-         if iBouton == self.userInterface.boutonOuvrier:
-            self.gameController.getJoueurActif().nbOuvrier += 1
-            print (self.gameController.getJoueurActif().nbOuvrier)
-         elif iBouton.tkId == item[0]:
-            element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
-            print(element)
-            if element != None:
-               self.gameZone.afficherElementIndex(element)
-            self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
-            self.gameZone.selectTerritoire(self.gameZone.currentCity)
-            self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
+         if iBouton.tkId == item[0]:
+            if iBouton.categorie == "amelioration":
+               if iBouton == self.userInterface.boutonOuvrier:
+                  self.gameController.getJoueurActif().nbOuvrier += 1
+                  print (self.gameController.getJoueurActif().nbOuvrier)
+               elif  iBouton == self.userInterface.boutonAmeliorationChemin:
+                  self.gameController.getJoueurActif().listAmelioration.append("chemin")
+                  print(self.gameController.getJoueurActif().listAmelioration)
+                  self.userInterface.delete(iBouton.tkId)
+                  self.userInterface.delete(iBouton.tkIdText)                
+               elif iBouton == self.userInterface.boutonAmeliorationCaserne:
+                  self.gameController.getJoueurActif().listAmelioration.append("caserne")
+                  print(self.gameController.getJoueurActif().listAmelioration)
+                  self.userInterface.delete(iBouton.tkId)
+                  self.userInterface.delete(iBouton.tkIdText)
+            else :
+               element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
+               print(element)
+               if element != None:
+                  self.gameZone.afficherElementIndex(element)
+               self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
+               self.gameZone.selectTerritoire(self.gameZone.currentCity)
+               self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
 
    def onKeyPress(self, event):
       """METHODE APPELE QUAND UNE TOUCHE DU CLAVIER EST ENFONCE"""
