@@ -50,7 +50,7 @@ class GameController():
       if entite2.vie - degat <= 0:
          #entite2 contre attaque et meurt
          entite2.parent.removeEntite(entite2)
-         gameZone.supprimerElement(entite2)
+         gameZone.supprimerEntite(entite2)
       else:
          #entite2 contre attaque et survie
          entite2.vie -= degat
@@ -59,7 +59,7 @@ class GameController():
       if entite1.vie - degatContrAttaque <= 0:
          #entite1 meurt
          entite1.parent.removeEntite(entite1)
-         gameZone.supprimerElement(entite1)         
+         gameZone.supprimerEntite(entite1)         
          pass
       else:
          #entite1 un prend des degats et survie
