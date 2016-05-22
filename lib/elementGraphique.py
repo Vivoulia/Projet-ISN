@@ -205,6 +205,12 @@ class Champ(Batiment):
       self.production = 10
       self.description = "Cool pour planter du ble, des bettraves, des carottes ou de la beuh"
       self.nom = "Champ"
+      self.etatAnimation = 0
+   
+   def etatAvance(self):
+      self.etatAnimation += 1
+      if self.etatAnimation == 3:
+         self.etatAnimation = 0
 
 class Mine(Batiment):
    def __init__(self, x, y, joueur, parent):
@@ -267,6 +273,14 @@ class Decor(ElementJouable):
 class Foret(Decor):
    def __init__(self, x, y, parent):
       Decor.__init__(self, x, y, parent,  "foret.gif", "testTuile2D.gif")
+
+class Ble(Decor):
+   def __init__(self, x, y, parent):
+      Decor.__init__(self, x, y, parent,  "ble1.gif", "testTuile2D.gif")
+
+class Ble2(Decor):
+   def __init__(self, x, y, parent):
+      Decor.__init__(self, x, y, parent,  "ble2.gif", "testTuile2D.gif")
       
 class CaseSelectionConstruction(ElementGraphique):
    def __init__(self, x, y, parent, textureName, textureDesc="case selection.gif" , cheminTexture = "texture/"):

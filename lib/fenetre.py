@@ -393,10 +393,13 @@ class RessourceInterFace(Canvas):
       self.parent = widgetParent
       self.fenetre = fenetre
       self.textRessource = self.create_text(50,10, font='Helvetica 12', text="Ressource: ")
-      self.textNbRessourceVar = StringVar(widgetParent, self.fenetre.gameController.getJoueurActif().getNbRessourceTour())
-      self.textNbRessource = self.create_text(100,10, font='Helvetica 12', text=self.textNbRessourceVar.get())
-      self.textProduction = self.create_text(200,10, font='Helvetica 12', text="Production Par tour") 
+      #self.textNbRessourceVar = StringVar(widgetParent, self.fenetre.gameController.getJoueurActif().getNbRessourceTour())
+      self.textNbRessource = self.create_text(125,10, font='Helvetica 12', text="")
+      self.textProduction = self.create_text(250,10, font='Helvetica 12', text="Production Par tour")
+      self.textNbProduction = self.create_text(375,10, font='Helvetica 12', text="") 
       print("affichage de la barre de ressources")
+      
+      self.actualiser()
 
    def afficherElement(self, element):
       """AFFICHE UN OBJET DE TYPE ELEMENT GRAPHIQUE ENVOYE EN PARAMETRE"""
@@ -405,7 +408,9 @@ class RessourceInterFace(Canvas):
       self.update()
    
    def actualiser(self):
-      pass
+      self.itemconfig(self.textNbRessource, text=self.fenetre.gameController.getJoueurActif().getNbRessource())
+      self.itemconfig(self.textNbProduction, text=self.fenetre.gameController.getJoueurActif().getNbRessourceTour())
+      self.update()
 
 class Fenetre():
    def __init__(self, gameController):
@@ -430,9 +435,9 @@ class Fenetre():
       self.userInterface = UserInterface(self.zone_description, self, "brown", width=250, height=height-150)
       self.userInterface.grid(column=0, row=0)
       self.zone_description.grid(column=1, row=1)
-      self.finTour = Button(self.zone_description, text="Fin du Tour")
-      self.finTour.grid(column=0, row=1)
-      self.finTour.config(command=self.gameController.finTour)
+      self.finTourBut = Button(self.zone_description, text="Fin du Tour")
+      self.finTourBut.grid(column=0, row=1)
+      self.finTourBut.config(command=self.finTour)
       
       """CREATION DE LA ZONE RESSOURCE"""
       
@@ -467,8 +472,28 @@ class Fenetre():
    def setGameController(self, gameController):
       self.gameController = gameController
       self.finTour.config(command=self.gameController.finTour)
+      
+   def finTour(self):
+      self.gameController.finTour()
+      for iBatimentAnimation in self.gameController.getJoueurActif().batimentAnimation:
+         if iBatimentAnimation.getNom() == "Champ":
+            if len(iBatimentAnimation.parent.getDecor()) > 0:
+               for iDecor in iBatimentAnimation.parent.getDecor():
+                  self.gameZone.supprimerElement(iDecor)
+                  iBatimentAnimation.parent.removeDecor(iDecor)
+            if iBatimentAnimation.etatAnimation == 0:
+               decor = iBatimentAnimation.parent.addDecorBle()
+               self.gameZone.afficherElementIndex(decor)
+            elif iBatimentAnimation.etatAnimation == 1:
+               decor = iBatimentAnimation.parent.addDecorBle2()
+               self.gameZone.afficherElementIndex(decor)
+            iBatimentAnimation.etatAvance()
+            
+      self.ressourceInterFace.actualiser()
 
    """   EVENT  """
+   
+   
 
    def onTuileClick(self, event):
       x, y = self.gameZone.translateToIsoScroll(event.x, event.y)
@@ -581,6 +606,7 @@ class Fenetre():
                self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
                self.gameZone.selectTerritoire(self.gameZone.currentCity)
                self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
+      self.ressourceInterFace.actualiser()
 
    def onKeyPress(self, event):
       """METHODE APPELE QUAND UNE TOUCHE DU CLAVIER EST ENFONCE"""

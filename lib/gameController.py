@@ -13,13 +13,7 @@ class GameController():
       """FONCTION QUI ORGANISE LA FIN DU TOUR"""
       print("fin du tour")
       self.etat = "Fin"
-      self.joueurActif.nbRessource += 30
-      if "technologie" in self.joueurActif.listAmelioration:
-         self.joueurActif.nbRessource += self.joueurActif.champs*15
-      else:
-         self.joueurActif.nbRessource += self.joueurActif.champs*10
-      self.joueurActif.nbRessource += self.joueurActif.mines*20
-      self.joueurActif.nbRessource += self.joueurActif.scieries*30
+      self.joueurActif.nbRessource += self.joueurActif.getNbRessourceTour()
       print(self.joueurActif.nbRessource)
       if self.joueurActif == self.joueur1:
          self.joueurActif = self.joueur2
@@ -30,7 +24,8 @@ class GameController():
       for iEntite in self.joueurActif.entiteResetDeplacement:
          iEntite.setMoove(True)
       for iEntite in self.joueurActif.entiteResetCombat:
-         iEntite.setCanAttack(True)      
+         iEntite.setCanAttack(True)             
+         
       self.etat = "En jeu"
    
    def setJoueur(self, joueur1, joueur2):

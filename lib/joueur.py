@@ -14,6 +14,8 @@ class Joueur():
         self.nbOuvrier = 1
         self.entiteResetDeplacement = list()
         self.entiteResetCombat = list()
+        self.batimentConstruction = list()
+        self.batimentAnimation = list()
 
     def setVilleDepart(self, ville):
         self.villeDepart = ville
@@ -23,6 +25,22 @@ class Joueur():
         
     def addEntiteResetCombat(self, entite):
         self.entiteResetCombat.append(entite)
+    
+    def addBatimentAnimation(self, batiment):
+        self.batimentAnimation.append(batiment)
+    
+    def removeBatimentAnimation(self, batiment):
+        self.batimentAnimation.remove(batiment)    
         
     def getNbRessourceTour(self):
-        return 50
+        nbRessource = 0
+        if "technologie" in self.listAmelioration:
+            nbRessource += self.joueurActif.champs*15
+        else:
+            nbRessource += self.champs*10
+        nbRessource += self.mines*20
+        nbRessource += self.scieries*30        
+        return nbRessource + 30
+    
+    def getNbRessource(self):
+        return self.nbRessource    
