@@ -60,18 +60,22 @@ class Tuile():
    
    def addBatimentChemin(self, camp):
       self.batiment = elementGraphique.Chemin(self.x, self.y, camp, self)
+      camp.chemins += 1
       return self.batiment   
 
    def addBatimentChamp(self, camp):
       self.batiment = elementGraphique.Champ(self.x, self.y, camp, self)
+      camp.champs += 1
       return self.batiment
 
    def addBatimentScierie(self, camp):
       self.batiment = elementGraphique.Scierie(self.x, self.y, camp, self)
+      camp.scieries += 1
       return self.batiment
 
    def addBatimentMine(self, camp):
       self.batiment = elementGraphique.Mine(self.x, self.y, camp, self)
+      camp.mines += 1
       return self.batiment
 
    def addBatimentEntrepot(self, camp):

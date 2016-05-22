@@ -7,6 +7,10 @@ TUILE_X = 124
 TUILE_Y = 62
 marge = 5
 "COORDS DES VILLES"
+x1 = 6
+y1 = 23
+x2 = 22
+y2 = 7
 x1 = 10
 y1 = 21
 x2 = 21
