@@ -121,7 +121,7 @@ class Epeiste(Entite):
       Entite.__init__(self,x, y, joueur, parent, textureName, textureDesc)
       self.vieDepart = 100
       self.vie = self.vieDepart
-      self.pa = 10
+      self.pa = 4
       self.attaque = 3
 
 

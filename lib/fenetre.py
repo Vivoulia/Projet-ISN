@@ -96,7 +96,7 @@ class GameZone(ZoneAffichage):
       self.delete(entite.tkId)
       self.delete(entite.barreVieContourTkId)
       self.delete(entite.barreVieTkId)
-      del element   
+      del entite   
    
    def selectTuile(self, selection, texture):
       """AFFICHE LES TUILES ENVOYE DANS UNE LIST EN PARAMETRE"""
@@ -238,7 +238,6 @@ class GameZone(ZoneAffichage):
       self.coords(self.currentEntite.tkId, tuile.x, tuile.y)
       i, j = self.translateToIso(tuile.x, tuile.y)
       self.tag_lower(self.currentEntite.tkId, self.fenetre.carte.terrain[i][j].terrain.tkId)
-      self.update()
       self.currentEntite.parent.removeEntite(self.currentEntite)
       tuile.addEntite(self.currentEntite)
       self.currentEntite.parent = tuile
@@ -246,6 +245,7 @@ class GameZone(ZoneAffichage):
       self.currentEntite.x = tuile.x
       self.currentEntite.y = tuile.y
       self.afficherBarreDeVie(self.currentEntite)
+      #self.update()
 
    def tuileExiste(self, tuile):
       if (tuile.i < ligne and tuile.i > 0) and (tuile.j < colonne and tuile.j > 0):
@@ -525,7 +525,7 @@ class Fenetre():
       print(self.carte.terrain[x][y].i, self.carte.terrain[x][y].j)
       self.userInterface.clear()
       self.gameZone.currentTuile = self.carte.terrain[x][y]
-      if len(self.carte.terrain[x][y].getEntite()) > 0  :
+      if len(self.carte.terrain[x][y].getEntite()) > 0:
          #Il y a des entités sur la tuile
          entite = self.carte.terrain[x][y].getEntite()
          if entite[0].joueur == self.gameController.getJoueurActif():
@@ -639,13 +639,13 @@ class Fenetre():
                   self.gameZone.selectTerritoire(self.gameZone.currentCity)
                   self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
 
-               element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
-               print(element)
-               if element != None:
-                  self.gameZone.afficherElementIndex(element)
-               self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
-               self.gameZone.selectTerritoire(self.gameZone.currentCity)
-               self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
+               #element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
+               #print(element)
+               #if element != None:
+                  #self.gameZone.afficherElementIndex(element)
+               #self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
+               #self.gameZone.selectTerritoire(self.gameZone.currentCity)
+               #self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
       self.ressourceInterFace.actualiser()
 
    def onKeyPress(self, event):
