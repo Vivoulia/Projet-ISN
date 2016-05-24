@@ -4,13 +4,14 @@ class Joueur():
         self.identifiant = identifiant
         self.xp = 0
         self.nbRessource = 50
+        self.nbMaxRessource = 100
         self.villeDepart = None
         self.listAmelioration =[]
         self.champs = 0
         self.mines = 0
         self.scieries = 0
         self.chemins = 0
-        self.coutChemins = 10
+        self.coutChemin = 10
         self.nbOuvrier = 1
         self.entiteResetDeplacement = list()
         self.entiteResetCombat = list()
