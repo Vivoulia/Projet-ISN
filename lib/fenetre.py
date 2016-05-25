@@ -69,7 +69,7 @@ class GameZone(ZoneAffichage):
       y = entite.y - 80
       vie_x = ((entite.vie)/entite.vieDepart)*60 
       if entite.barreVieTkId == None:
-         #La barre de vie n'a pas encore Ã©tÃ© initialisÃ©
+         #La barre de vie n'a pas encore été initialisée
          entite.barreVieContourTkId = self.create_rectangle(x, y, x+60, y+10)
          if entite.vie < entite.vieDepart//4:
             entite.barreVieTkId = self.create_rectangle(x, y, round(x+vie_x), y+10, fill="red")   
@@ -78,7 +78,7 @@ class GameZone(ZoneAffichage):
          else:
             entite.barreVieTkId = self.create_rectangle(x, y, round(x+vie_x), y+10, fill="green")
       else:
-         #on met a jour les coordonnÃ©es de la barre de vie
+         #on met a jour les coordonnées de la barre de vie
          if entite.vie < entite.vieDepart//4:
             self.itemconfigure(entite.barreVieTkId, fill="red")   
          elif entite.vie < entite.vieDepart//2:
@@ -448,13 +448,13 @@ class RessourceInterFace(Canvas):
       self.update()
 
 class Fenetre():
-   def __init__(self, gameController):
+   def __init__(self, gameController, sonManager):
       self.windows = Tk()
       width, height = self.windows.winfo_screenwidth(), self.windows.winfo_screenheight()
       self.windows.bind('<KeyPress>', self.onKeyPress)
       self.windows.bind('<MouseWheel>', self.onKeyPress)
       self.gameController = gameController
-      
+      self.sonManager = sonManager
       """CREATTION DE LA ZONE DE JEU (canvas)"""
 
       self.zone_jeu = Frame(self.windows)
@@ -536,7 +536,7 @@ class Fenetre():
       self.userInterface.clear()
       self.gameZone.currentTuile = self.carte.terrain[x][y]
       if len(self.carte.terrain[x][y].getEntite()) > 0:
-         #Il y a des entitÃ©s sur la tuile
+         #Il y a des entitées sur la tuile
          entite = self.carte.terrain[x][y].getEntite()
          if entite[0].joueur == self.gameController.getJoueurActif():
             #L'entite appartiennent au joueur actif
@@ -546,16 +546,19 @@ class Fenetre():
          else:
             #L'entite sur la tuile est ennemi
             if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
-               #On regarde si elle est dans les cases selectionnÃ©s, car dans ce cas on peut l'attaquer
-               self.gameController.combat(self.gameZone.currentEntite, entite[0], self.gameZone)
+               #On regarde si elle est dans les cases selectionnées, car dans ce cas on peut l'attaquer
+               if self.gameZone.currentEntite.canAttack:
+                  self.gameController.combat(self.gameZone.currentEntite, entite[0], self.gameZone)
+                  self.sonManager.playSound("son/combat.wav", False)
                if len(self.carte.terrain[x][y].getEntite()) > 0:
                   self.gameZone.afficherBarreDeVie(entite[0])
                self.gameZone.afficherBarreDeVie(self.gameZone.currentEntite)
             else:
                if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
-                  print("a l'attaque")
+                  pass
       elif self.carte.terrain[x][y].getBatiment() != None:
          #Il y a un batiment sur la tuile
+         self.sonManager.playSound(self.carte.terrain[x][y].getBatiment().getSound(), False)
          if self.gameController.getJoueurActif() == self.carte.terrain[x][y].getBatiment().joueur:
             if self.carte.terrain[x][y].getBatiment().getNom() == "Mairie Ressource":
                #si le batiment est une mairie
@@ -588,10 +591,13 @@ class Fenetre():
          else:
             if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
                if len(self.carte.terrain[x][y].getEntite()) > 0 :
-                  #Il y a des entitÃ©s sur la tuile
+                  #Il y a des entitées sur la tuile
                   entite = self.carte.terrain[x][y].getEntite()
                   if entite[0].joueur != self.gameController.getJoueurActif():
                      pass
+               elif self.carte.terrain[x][y].getBatiment() != None:
+                  if self.carte.terrain[x][y].getBatiment().getJoueur() != self.gameController.getJoueurActif():
+                     print("A l'attaque du batiment")
                else:
                   self.gameZone.moveUnitTo(self.carte.terrain[x][y])
             elif len(self.gameZone.selectedTkId) != 0:
@@ -624,6 +630,7 @@ class Fenetre():
       item = event.widget.find_closest(screenX, screenY)
       for iBouton in self.userInterface.boutonListe:
          if iBouton.tkId == item[0]:
+<<<<<<< HEAD
 
             if self.gameController.getJoueurActif().nbRessource >= iBouton.cout:
                self.gameController.getJoueurActif().nbRessource -= iBouton.cout
@@ -661,6 +668,40 @@ class Fenetre():
                      print(self.gameController.getJoueurActif().listAmelioration)
                      self.userInterface.delete(iBouton.tkId)
                      self.userInterface.delete(iBouton.tkIdText)
+=======
+            if iBouton.categorie == "amelioration":
+               if iBouton == self.userInterface.boutonOuvrier:
+                  self.gameController.getJoueurActif().nbOuvrier += 1
+                  print (self.gameController.getJoueurActif().nbOuvrier)
+               elif  iBouton == self.userInterface.boutonAmeliorationTour:
+                  self.gameController.getJoueurActif().listAmelioration.append("tour")
+                  print(self.gameController.getJoueurActif().listAmelioration)
+                  self.userInterface.delete(iBouton.tkId)
+                  self.userInterface.delete(iBouton.tkIdText)
+               elif iBouton == self.userInterface.boutonAmeliorationCaserne:
+                  self.gameController.getJoueurActif().listAmelioration.append("caserne")
+                  print(self.gameController.getJoueurActif().listAmelioration)
+                  self.userInterface.delete(iBouton.tkId)
+                  self.userInterface.delete(iBouton.tkIdText)
+            else :
+               if self.gameController.getJoueurActif().nbRessource >= iBouton.cout:
+                  self.gameController.getJoueurActif().nbRessource -= iBouton.cout
+                  element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
+                  if element != None:
+                     self.gameZone.afficherElementIndex(element)
+                  self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
+                  self.gameZone.selectTerritoire(self.gameZone.currentCity)
+                  self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
+                  #element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
+                  self.ressourceInterFace.actualiser()
+                  print(element)
+                  #if element != None:
+                     #self.gameZone.afficherElementIndex(element)
+                  #self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
+                  #self.gameZone.selectTerritoire(self.gameZone.currentCity)
+                  #self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
+                  #self.ressourceInterFace.actualiser()
+>>>>>>> origin/master
                else :
                   if self.gameController.getJoueurActif().nbRessource >= iBouton.cout:
                      self.gameController.getJoueurActif().nbRessource -= iBouton.cout
