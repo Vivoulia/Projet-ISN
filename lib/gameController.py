@@ -1,5 +1,6 @@
 from . import fenetre
 from . import carte
+from random import randint
 
 class GameController():
    def __init__(self):
@@ -45,7 +46,9 @@ class GameController():
    def combat(self, entite1, entite2, gameZone):
       """FONCTION QUI GERE LE COMBAT DE L'ENTITE 1 QUI ATTAQUE L'ENTITE 2"""
       degat = entite1.attaque*(entite1.vie//10)
-      degatContrAttaque = entite2.attaque*(entite2.vie//30)
+      degat += randint(0, degat)
+      degatContreAttaque = entite2.attaque*(entite2.vie//30)
+      degatContreAttaque += randint(0, degatContreAttaque)*2
       entite1.setCanAttack(False)
       if entite2.vie - degat <= 0:
          #entite2 contre attaque et meurt
@@ -56,13 +59,38 @@ class GameController():
          entite2.vie -= degat
          pass
       #contre attaque
-      if entite1.vie - degatContrAttaque <= 0:
+      if entite1.vie - degatContreAttaque <= 0:
          #entite1 meurt
          entite1.parent.removeEntite(entite1)
          gameZone.supprimerEntite(entite1)         
          pass
       else:
          #entite1 un prend des degats et survie
-         entite1.vie -= degatContrAttaque
+         entite1.vie -= degatContreAttaque
          pass
-   
+      
+   def combatBatiment(self, entite1, batiment, gameZone):
+      """FONCTION QUI GERE LE COMBAT DE L'ENTITE 1 QUI ATTAQUE L'ENTITE 2"""
+      degat = entite1.attaque*(entite1.vie//10)
+      degat += randint(0, degat)
+      degatContreAttaque = entite2.attaque*(entite2.vie//30)
+      degatContreAttaque += randint(0, degatContreAttaque)*2
+      entite1.setCanAttack(False)
+      if entite2.vie - degat <= 0:
+         #entite2 contre attaque et meurt
+         entite2.parent.removeEntite(entite2)
+         gameZone.supprimerEntite(entite2)
+      else:
+         #entite2 contre attaque et survie
+         entite2.vie -= degat
+         pass
+      #contre attaque
+      if entite1.vie - degatContreAttaque <= 0:
+         #entite1 meurt
+         entite1.parent.removeBatiment(batiment)
+         gameZone.supprimerElement(batiment)         
+         pass
+      else:
+         #entite1 un prend des degats et survie
+         entite1.vie -= degatContreAttaque
+         pass   

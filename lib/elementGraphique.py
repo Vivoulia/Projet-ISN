@@ -88,6 +88,7 @@ class Entite(ElementJouable):
       self.joueur = joueur #0: neutre / 1: Joueur 1 / 2: Joueur 2
       self.pa = 0 #Point d'action
       self.attaque = 0
+      self.attaqueBatiment = 0
       self.defense = 0
       self.portee = 0
       self.bonusTerrain = 0
@@ -97,6 +98,7 @@ class Entite(ElementJouable):
       self.canAttack = True
       self.barreVieContourTkId = None
       self.barreVieTkId = None
+      self.soundFile = "son/combat.wave"
       
    def canMoove(self):
       return self.moove
@@ -114,6 +116,9 @@ class Entite(ElementJouable):
       else:
          self.moove = False
          self.joueur.addEntiteResetDeplacement(self)
+      
+   def getSound(self):
+      return self.soundFile
          
       
 class Epeiste(Entite):
@@ -123,6 +128,7 @@ class Epeiste(Entite):
       self.vie = self.vieDepart
       self.pa = 4
       self.attaque = 3
+      self.attaqueBatiment = 1
 
 
 class Cavalier(Entite):
@@ -132,6 +138,7 @@ class Cavalier(Entite):
       self.vie = self.vieDepart
       self.pa = 6
       self.attaque = 3
+      self.attaqueBatiment = 1
 
 
 class Archet(Entite):
@@ -141,6 +148,7 @@ class Archet(Entite):
       self.vie = self.vieDepart
       self.pa = 3
       self.attaque = 3
+      self.attaqueBatiment = 1
       
 
 class Batiment(ElementJouable):
@@ -151,10 +159,16 @@ class Batiment(ElementJouable):
       self.joueur = joueur
       self.description = "Je suis une structure"
       self.nom = "Je m'apelle rien"
+      self.soundFile = None
+      
    def getNom(self):
       return self.nom
+   
    def getDescription(self):
       return self.description
+   
+   def getSound(self):
+      return self.soundFile   
    
 class BatimentSpecial(Batiment):
    #BATIMENT QUI SONT RELIE A DES TUILES (APPELEES TERRITOIRE)
@@ -173,9 +187,11 @@ class Mairie(BatimentSpecial):
       self.territoire = list() #Tableau contenant les tuiles qui sont reliées a la ville
       self.territoire.append(parent)
       self.description = "Petit village"
-      self.nom = "Mairie"      
+      self.nom = "Mairie"
+      
    def getTerritoire(self):
       return self.territoire
+   
    def addTerritoire(self, tuile):
       self.territoire.append(tuile)
       
@@ -186,6 +202,7 @@ class MairieRessource(Mairie):
       self.territoire.append(parent)
       self.description = "Pour exploiter sans vergogne toutes les ressources disponibles"
       self.nom = "Mairie Ressource"
+      self.soundFile = "son/mairie.wav"
 
 class Ferme(BatimentSpecial):
    def __init__(self, x, y, joueur, parent):
