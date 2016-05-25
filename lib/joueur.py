@@ -3,7 +3,7 @@ class Joueur():
     def __init__(self, identifiant):
         self.identifiant = identifiant
         self.xp = 0
-        self.nbRessource = 50
+        self.nbRessource = 50000
         self.nbMaxRessource = 100
         self.villeDepart = None
         self.listAmelioration =[]

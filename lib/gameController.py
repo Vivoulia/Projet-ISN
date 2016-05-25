@@ -69,28 +69,13 @@ class GameController():
          entite1.vie -= degatContreAttaque
          pass
       
-   def combatBatiment(self, entite1, batiment, gameZone):
+   def combatBatiment(self, entite, batiment, gameZone):
       """FONCTION QUI GERE LE COMBAT DE L'ENTITE 1 QUI ATTAQUE L'ENTITE 2"""
-      degat = entite1.attaque*(entite1.vie//10)
-      degat += randint(0, degat)
-      degatContreAttaque = entite2.attaque*(entite2.vie//30)
-      degatContreAttaque += randint(0, degatContreAttaque)*2
-      entite1.setCanAttack(False)
-      if entite2.vie - degat <= 0:
-         #entite2 contre attaque et meurt
-         entite2.parent.removeEntite(entite2)
-         gameZone.supprimerEntite(entite2)
+      entite.setCanAttack(False)
+      if (batiment.vie - entite.attaqueBatiment) <= 0:
+         #batiment est detruit
+         batiment.parent.batiment = None
+         gameZone.supprimerElement(batiment)
+         self.batiment.getJoueur().villeDepart.territoire.remove(batiment)
       else:
-         #entite2 contre attaque et survie
-         entite2.vie -= degat
-         pass
-      #contre attaque
-      if entite1.vie - degatContreAttaque <= 0:
-         #entite1 meurt
-         entite1.parent.removeBatiment(batiment)
-         gameZone.supprimerElement(batiment)         
-         pass
-      else:
-         #entite1 un prend des degats et survie
-         entite1.vie -= degatContreAttaque
-         pass   
+         batiment.vie -= entite.attaqueBatiment

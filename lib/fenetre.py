@@ -61,6 +61,7 @@ class GameZone(ZoneAffichage):
       i, j = self.translateToIso(element.x, element.y)
       #il faut verifier si terrain[i][j] existe (A FAIRE)
       self.tag_lower(tkId, self.fenetre.carte.terrain[i][j].terrain.tkId)
+      print("ELEMENT:", element.parent.terrain, "AFFICHAGE: ", self.fenetre.carte.terrain[i][j].terrain)
       self.update()
    
       
@@ -69,7 +70,7 @@ class GameZone(ZoneAffichage):
       y = entite.y - 80
       vie_x = ((entite.vie)/entite.vieDepart)*60 
       if entite.barreVieTkId == None:
-         #La barre de vie n'a pas encore été initialisée
+         #La barre de vie n'a pas encore Ã©tÃ© initialisÃ©e
          entite.barreVieContourTkId = self.create_rectangle(x, y, x+60, y+10)
          if entite.vie < entite.vieDepart//4:
             entite.barreVieTkId = self.create_rectangle(x, y, round(x+vie_x), y+10, fill="red")   
@@ -78,7 +79,7 @@ class GameZone(ZoneAffichage):
          else:
             entite.barreVieTkId = self.create_rectangle(x, y, round(x+vie_x), y+10, fill="green")
       else:
-         #on met a jour les coordonnées de la barre de vie
+         #on met a jour les coordonnÃ©es de la barre de vie
          if entite.vie < entite.vieDepart//4:
             self.itemconfigure(entite.barreVieTkId, fill="red")   
          elif entite.vie < entite.vieDepart//2:
@@ -167,18 +168,18 @@ class GameZone(ZoneAffichage):
       self.deselect()
       entite = tuile.getEntite()
       if entite[0].canMoove():
-         Q = Queue()
-         Q.put(tuile)
+         tuileAnalyser = Queue()
+         tuileAnalyser.put(tuile)
          i = 0
          closed = list()
          closed.append(tuile)
-         while not(Q.empty()) and i < entite[0].pa*(2*(entite[0].pa + 1)):
-            n = Q.get()
+         while not(tuileAnalyser.empty()) and i < entite[0].pa*(2*(entite[0].pa + 1)):
+            n = tuileAnalyser.get()
             territoireVoisin, nbVoisin = self.getVoisinComptage(n)
             i += nbVoisin
             for iVoisin in territoireVoisin:
                if not(iVoisin in closed):
-                  Q.put(iVoisin)
+                  tuileAnalyser.put(iVoisin)
                   self.selectedTuile.append(iVoisin)
                   closed.append(iVoisin)
                   #i += 1
@@ -187,6 +188,33 @@ class GameZone(ZoneAffichage):
          self.selectionType = "Entite"
          self.selectTuile(self.selectedTuile, "case selection entite.gif")
          self.selectionType = "Entite"
+         
+   def estAPorte(self, entite, tuile):
+      """VERIFIE SI UNE TUILE EST A PORTE D'UNE ENTITE"""
+      self.deselect()
+      tuileAnalyser = Queue()
+      tuileAnalyser.put(entite.parent)
+      i = 0
+      closed = list()
+      closed.append(entite.parent)
+      trouve = False
+      while not(tuileAnalyser.empty()) and i < entite.porte*(2*(entite.porte + 1)) and not(trouve):
+         n = tuileAnalyser.get()
+         territoireVoisin, nbVoisin = self.getVoisinComptage(n)
+         i += nbVoisin
+         for iVoisin in territoireVoisin:
+            if iVoisin == tuile:
+               trouve = True
+               break
+            if not(iVoisin in closed):
+               tuileAnalyser.put(iVoisin)
+               self.selectedTuile.append(iVoisin)
+               closed.append(iVoisin)
+               #i += 1
+            else:
+               i-=1
+      print(trouve)
+      return trouve
 
    def translateToIsoScroll(self, x, y):
       """TRANSLATE DES COORDONNEES X, Y EN COORDS ISOMETRIQUE"""
@@ -528,7 +556,7 @@ class Fenetre():
       self.userInterface.clear()
       self.gameZone.currentTuile = self.carte.terrain[x][y]
       if len(self.carte.terrain[x][y].getEntite()) > 0:
-         #Il y a des entitées sur la tuile
+         #Il y a des entitees sur la tuile
          entite = self.carte.terrain[x][y].getEntite()
          if entite[0].joueur == self.gameController.getJoueurActif():
             #L'entite appartiennent au joueur actif
@@ -538,10 +566,11 @@ class Fenetre():
          else:
             #L'entite sur la tuile est ennemi
             if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
-               #On regarde si elle est dans les cases selectionnées, car dans ce cas on peut l'attaquer
+               #On regarde si elle est dans les cases selectionnï¿½es, car dans ce cas on peut l'attaquer
                if self.gameZone.currentEntite.canAttack:
-                  self.gameController.combat(self.gameZone.currentEntite, entite[0], self.gameZone)
-                  self.sonManager.playSound("son/combat.wav", False)
+                  if self.gameZone.estAPorte(self.gameZone.currentEntite, self.carte.terrain[x][y]):
+                     self.gameController.combat(self.gameZone.currentEntite, entite[0], self.gameZone)
+                     self.sonManager.playSound("son/combat.wav", False)
                if len(self.carte.terrain[x][y].getEntite()) > 0:
                   self.gameZone.afficherBarreDeVie(entite[0])
                self.gameZone.afficherBarreDeVie(self.gameZone.currentEntite)
@@ -550,8 +579,8 @@ class Fenetre():
                   pass
       elif self.carte.terrain[x][y].getBatiment() != None:
          #Il y a un batiment sur la tuile
-         self.sonManager.playSound(self.carte.terrain[x][y].getBatiment().getSound(), False)
          if self.gameController.getJoueurActif() == self.carte.terrain[x][y].getBatiment().joueur:
+            self.sonManager.playSound(self.carte.terrain[x][y].getBatiment().getSound(), False)
             if self.carte.terrain[x][y].getBatiment().getNom() == "Mairie Ressource":
                #si le batiment est une mairie
                self.gameZone.currentCity = self.carte.terrain[x][y]
@@ -567,7 +596,10 @@ class Fenetre():
                self.userInterface.clear()
                self.userInterface.affichageBouton(self.carte.terrain[x][y])
          else:
-            pass
+            if self.gameZone.selectionType != "Batiment":
+               if self.carte.terrain[x][y] in self.gameZone.selectedTuile and self.gameZone.selectionType == "Entite":
+                  self.gameController.combatBatiment(self.gameZone.currentEntite, self.carte.terrain[x][y].getBatiment(), self.gameZone)
+            
             
             pass
       else:
@@ -583,11 +615,12 @@ class Fenetre():
          else:
             if self.carte.terrain[x][y] in self.gameZone.selectedTuile:
                if len(self.carte.terrain[x][y].getEntite()) > 0 :
-                  #Il y a des entitées sur la tuile
+                  #Il y a des entitï¿½es sur la tuile
                   entite = self.carte.terrain[x][y].getEntite()
                   if entite[0].joueur != self.gameController.getJoueurActif():
                      pass
                elif self.carte.terrain[x][y].getBatiment() != None:
+                  print("coucou")
                   if self.carte.terrain[x][y].getBatiment().getJoueur() != self.gameController.getJoueurActif():
                      print("A l'attaque du batiment")
                else:
@@ -648,38 +681,19 @@ class Fenetre():
                   #element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
                   self.ressourceInterFace.actualiser()
                   print(element)
-                  #if element != None:
-                     #self.gameZone.afficherElementIndex(element)
-                  #self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
-                  #self.gameZone.selectTerritoire(self.gameZone.currentCity)
-                  #self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
-                  #self.ressourceInterFace.actualiser()
                else :
-                  print("pas assez de thunes")
+                  print("pas assez d'argent")
 
    def onKeyPress(self, event):
       """METHODE APPELE QUAND UNE TOUCHE DU CLAVIER EST ENFONCE"""
       if event.char == "z":
-         if self.afficherArbre:
-            self.arbreCompetence.yview_scroll(-1,"unit")
-         else:
-            self.gameZone.yview_scroll(-1,"unit")
+         self.gameZone.yview_scroll(-1,"unit")
       elif event.char == "s":
-         if self.afficherArbre:
-            self.arbreCompetence.yview_scroll(1,"unit")
-         else:
-            self.gameZone.yview_scroll(1,"unit")
+         self.gameZone.yview_scroll(1,"unit")
       elif event.char == "q":
          self.gameZone.xview_scroll(-1,"unit")
       elif event.char == "d":
          self.gameZone.xview_scroll(1,"unit")
-      elif event.char == "e":
-         if self.afficherArbre:
-            self.arbre_competence.grid_forget()
-            self.afficherArbre = False
-         else:
-            self.arbre_competence.grid(column=0, row=0)
-            self.afficherArbre = True
       elif event.delta<0:
          self.userInterface.yview_scroll(1,"unit")
       elif event.delta>0:

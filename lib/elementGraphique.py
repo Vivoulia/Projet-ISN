@@ -94,6 +94,7 @@ class Entite(ElementJouable):
       self.bonusTerrain = 0
       self.typeDegat = 0
       self.level = 0
+      self.porte = 1
       self.moove = True
       self.canAttack = True
       self.barreVieContourTkId = None
@@ -203,6 +204,7 @@ class MairieRessource(Mairie):
       self.description = "Pour exploiter sans vergogne toutes les ressources disponibles"
       self.nom = "Mairie Ressource"
       self.soundFile = "son/mairie.wav"
+      self.vie = 40
 
 class Ferme(BatimentSpecial):
    def __init__(self, x, y, joueur, parent):
