@@ -640,8 +640,6 @@ class Fenetre():
                   self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
                   self.gameZone.selectTerritoire(self.gameZone.currentCity)
                   self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
-
-<<<<<<< HEAD
                #element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
                #print(element)
                #if element != None:
@@ -649,8 +647,6 @@ class Fenetre():
                #self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
                #self.gameZone.selectTerritoire(self.gameZone.currentCity)
                #self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
-      self.ressourceInterFace.actualiser()
-=======
                   element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
                   print(element)
                   if element != None:
@@ -661,7 +657,6 @@ class Fenetre():
                   self.ressourceInterFace.actualiser()
                else :
                   print("pas assez de thunes")
->>>>>>> origin/master
 
    def onKeyPress(self, event):
       """METHODE APPELE QUAND UNE TOUCHE DU CLAVIER EST ENFONCE"""

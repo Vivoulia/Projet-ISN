@@ -15,9 +15,10 @@ class Game():
       self.fenetre = fenetre.Fenetre(self.gameController)
       self.carte.setFenetre(self.fenetre)
       self.fenetre.setCarte(self.carte)
+      
       #self.fenetre.setGameController(self.gameController)
       #self.sonManager = son.SonManager()
-      #self.sonManager.playSonFond()
+      s#elf.sonManager.playSonFond()
 
    def loadMap(self):
       self.carte.load()
@@ -28,3 +29,5 @@ if __name__ == "__main__":
       game = Game()
       game.loadMap()
       game.loadFenetre()
+      
+      game.sonManager.closeAll()
