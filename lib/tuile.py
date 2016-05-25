@@ -119,6 +119,14 @@ class Tuile():
       self.entite.append(elementGraphique.Epeiste(self.x, self.y, camp, self))
       return self.entite[0]
    
+   def addEntiteArcher(self, camp):
+      self.entite.append(elementGraphique.Archer(self.x, self.y, camp, self))
+      return self.entite[0]
+   
+   def addEntiteCatapulte(self, camp):
+      self.entite.append(elementGraphique.Catapulte(self.x, self.y, camp, self))
+      return self.entite[0]   
+   
    def getBatiment(self):
       return self.batiment
    

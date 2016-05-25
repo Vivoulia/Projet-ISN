@@ -71,7 +71,7 @@ class TerrainMontagne(Terrain):
    def __init__(self,x, y, parent):
       Terrain.__init__(self,x, y, parent, "montagne.gif")
       self.cout = 2
-      self.nom = "Montagne"
+      self.nom = "Montagne Haute"
       self.description = "Grande montagne, zone de subduction"
 
 class TerrainMontagneBasse(Terrain):
@@ -100,6 +100,7 @@ class Entite(ElementJouable):
       self.barreVieContourTkId = None
       self.barreVieTkId = None
       self.soundFile = "son/combat.wave"
+      self.nom = "Entite"
       
    def canMoove(self):
       return self.moove
@@ -127,30 +128,34 @@ class Epeiste(Entite):
       Entite.__init__(self,x, y, joueur, parent, textureName, textureDesc)
       self.vieDepart = 100
       self.vie = self.vieDepart
-      self.pa = 4
-      self.attaque = 3
-      self.attaqueBatiment = 1
-
-
-class Cavalier(Entite):
-   def __init__(self, x, y, joueur, parent, textureName = "epeiste.gif", textureDesc="testTuile2D.gif"):
-      Entite.__init__(self,x, y, joueur, parent, textureName, textureDesc)
-      self.vieDepart = 100
-      self.vie = self.vieDepart
-      self.pa = 6
-      self.attaque = 3
-      self.attaqueBatiment = 1
-
-
-class Archet(Entite):
-   def __init__(self, x, y, joueur, parent, textureName = "epeiste.gif", textureDesc="testTuile2D.gif"):
-      Entite.__init__(self,x, y, joueur, parent, textureName, textureDesc)
-      self.vieDepart = 100
-      self.vie = self.vieDepart
       self.pa = 3
       self.attaque = 3
       self.attaqueBatiment = 1
-      
+      self.nom = "Epeiste"
+
+
+class Archer(Entite):
+   def __init__(self, x, y, joueur, parent, textureName = "archer.gif", textureDesc="testTuile2D.gif"):
+      Entite.__init__(self,x, y, joueur, parent, textureName, textureDesc)
+      self.vieDepart = 30
+      self.vie = self.vieDepart
+      self.porte = 6
+      self.pa = 6
+      self.attaque = 10
+      self.attaqueBatiment = 1
+      self.nom = "Archer"
+
+
+class Catapulte(Entite):
+   def __init__(self, x, y, joueur, parent, textureName = "catapulte.gif", textureDesc="testTuile2D.gif"):
+      Entite.__init__(self,x, y, joueur, parent, textureName, textureDesc)
+      self.vieDepart = 200
+      self.vie = self.vieDepart
+      self.porte = 10
+      self.pa = 2
+      self.attaque = 5
+      self.attaqueBatiment = 10
+      self.nom = "Catapulte"
 
 class Batiment(ElementJouable):
    def __init__(self,x, y, joueur, parent, textureName="erreur.gif", textureDesc="testTuile2D.gif", cheminTexture = "texture/Batiment/", cheminDesc = "texture/Batiment/"):
@@ -332,6 +337,7 @@ class Bouton(ElementGraphique):
       self.description = "Description Au survol de la souris"
       self.tkId = None
       self.tkIdText = None
+      self.tkIdTextePrix = None
       
    def event(self):
       pass
@@ -344,6 +350,9 @@ class Bouton(ElementGraphique):
       
    def setTkIdText(self, tkId):
       self.tkIdText = tkId
+      
+   def setTkIdTextPrix(self, tkId):
+      self.tkIdTextePrix = tkId   
       
    def setIndice(self, indice):
       """DONNE DES COORDONNEES EN FONCTION DE L'INDICE"""
@@ -470,11 +479,33 @@ class BoutonRecrutementEpeiste(Bouton):
    def __init__(self, textureName="bouton_recrutement_epeiste.gif"):
       Bouton.__init__(self, textureName)
       self.cout = 60
-      self.categorie = "amelioration"
+      self.categorie = "recrutement"
       self.description = "Recruter un epeiste"
 
    def event(self, tuile, joueur):
       entite = tuile.addEntiteEpeiste(joueur)
+      return entite
+
+class BoutonRecrutementArcher(Bouton):
+   def __init__(self, textureName="bouton_recrutement_archer.gif"):
+      Bouton.__init__(self, textureName)
+      self.cout = 70
+      self.categorie = "recrutement"
+      self.description = "Recruter un archer"
+
+   def event(self, tuile, joueur):
+      entite = tuile.addEntiteArcher(joueur)
+      return entite
+   
+class BoutonRecrutementCatapulte(Bouton):
+   def __init__(self, textureName="bouton_recrutement_catapulte.gif"):
+      Bouton.__init__(self, textureName)
+      self.cout = 100
+      self.categorie = "recrutement"
+      self.description = "Recruter une catapulte"
+
+   def event(self, tuile, joueur):
+      entite = tuile.addEntiteCatapulte(joueur)
       return entite
 
 class BoutonAmeliorationCaserne(Bouton):

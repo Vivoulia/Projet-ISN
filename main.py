@@ -17,13 +17,6 @@ class Game():
       self.fenetre = fenetre.Fenetre(self.gameController, self.sonManager)
       self.carte.setFenetre(self.fenetre)
       self.fenetre.setCarte(self.carte)
-      
-      #self.fenetre.setGameController(self.gameController)
-<<<<<<< HEAD
-      #self.sonManager = son.SonManager()
-      #self.sonManager.playSonFond()
-=======
->>>>>>> origin/master
 
    def loadMap(self):
       self.carte.load()

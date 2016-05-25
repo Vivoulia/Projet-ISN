@@ -289,11 +289,6 @@ class UserInterface(Canvas):
 
       """ CREATION DE LA ZONE D'INFORMATION """
 
-      self.descriptionTexte = StringVar()
-      self.descriptionTexte.set("Aucune Tuile")
-      self.description = Label(self.parent, textvariable=self.descriptionTexte)
-      #self.description.pack()
-      self.create_text(50,50, text="Test")
       fileName="texture/GUI/fond descritpion.gif"
       self.fondDescription = PhotoImage(file = fileName)
       self.create_image(0,996, image=self.fondDescription, anchor=SW)
@@ -313,6 +308,8 @@ class UserInterface(Canvas):
       self.boutonForge = elementGraphique.BoutonForge()
       self.boutonOuvrier = elementGraphique.BoutonOuvrier()
       self.boutonRecrutementEpeiste = elementGraphique.BoutonRecrutementEpeiste()
+      self.boutonRecrutementArcher = elementGraphique.BoutonRecrutementArcher()
+      self.boutonRecrutementCatapulte = elementGraphique.BoutonRecrutementCatapulte()
       self.boutonAmeliorationCaserne = elementGraphique.BoutonAmeliorationCaserne()
       self.boutonAmeliorationTour = elementGraphique.boutonAmeliorationTour()
       self.boutonAmeliorationDegat = elementGraphique.boutonAmeliorationDegat()
@@ -328,6 +325,9 @@ class UserInterface(Canvas):
       self.boutonListe.append(self.boutonCaserne)
       self.boutonListe.append(self.boutonChemin)
       self.boutonListe.append(self.boutonRecrutementEpeiste)
+      self.boutonListe.append(self.boutonRecrutementArcher)
+      self.boutonListe.append(self.boutonRecrutementCatapulte)
+      self.boutonListe.append(self.boutonAmeliorationCaserne)
       self.boutonListe.append(self.boutonOuvrier)
       self.boutonListe.append(self.boutonMoulin)
       self.boutonListe.append(self.boutonForge)
@@ -338,8 +338,10 @@ class UserInterface(Canvas):
       """AFFICHE UN OBJET DE TYPE ELEMENT GRAPHIQUE ENVOYE EN PARAMETRE"""
       tkId = self.create_image(element.x, element.y, image=element.getTexture(), anchor=SW)
       tkIdText = self.create_text(element.x, element.y+10, text=element.description, anchor=SW)
+      tkIdTextPrix = self.create_text(element.x+100, element.y-35, text="prix: " + str(element.cout), anchor=SW, font = "Purisa 12")
       element.setTkId(tkId)
       element.setTkIdText(tkIdText)
+      element.setTkIdTextPrix(tkIdTextPrix)
       self.tag_bind(tkId, '<ButtonPress-1>', self.fenetre.onBoutonClique)  
       self.update()
 
@@ -399,8 +401,13 @@ class UserInterface(Canvas):
       else:
          if tuile.getBatiment().getNom() == "Caserne":
             self.boutonRecrutementEpeiste.setIndice(0)
+            self.boutonRecrutementArcher.setIndice(2)
+            self.boutonRecrutementCatapulte.setIndice(3)
             self.afficherBouton(self.boutonRecrutementEpeiste)
+            self.afficherBouton(self.boutonRecrutementArcher)
+            self.afficherBouton(self.boutonRecrutementCatapulte)
             self.boutonAmeliorationPa.setIndice(1)
+            self.boutonAmeliorationDegat.setIndice(3)
             self.afficherBouton(self.boutonAmeliorationPa)
          elif tuile.getBatiment().getNom() == "Forge":
             self.boutonAmeliorationDegat.setIndice(0)
@@ -416,39 +423,8 @@ class UserInterface(Canvas):
       for iBouton in self.boutonListe:
          self.delete(iBouton.tkId)
          self.delete(iBouton.tkIdText)
+         self.delete(iBouton.tkIdTextePrix)
 
-class ArbreCompetence(Canvas):
-
-   def __init__(self, widgetParent, fenetre, background, width, height):
-      Canvas.__init__(self, widgetParent, bg=background, width=width, height=height)
-      self.fenetre = fenetre
-      self.availableList = list()
-      self.unlockedList = list()
-      self.fond = elementGraphique.Fond(30, 3000, self)
-      self.technologie = elementGraphique.Technologie(210, 330, self)
-      self.militaire = elementGraphique.Militaire(450, 190, self)
-      self.magie = elementGraphique.Magie(710, 330, self)
-      self.availableList.append(self.militaire)
-      self.availableList.append(self.technologie)
-      self.availableList.append(self.magie)
-      self.afficherArbre()
-      
-
-   def afficherArbre(self):
-      print("affichage arbre de competence")
-      self.croll = 0
-      self.create_image(self.fond.x, self.fond.y, image = self.fond.getTexture(), anchor=SW)
-      for amelioration in self.availableList :
-         self.afficherElement(amelioration)
-      #for cadre in self.unlockedList:
-      #   self.afficherElement(cadre)
-
-   def afficherElement(self, element):
-      """AFFICHE UN OBJET DE TYPE ELEMENT GRAPHIQUE ENVOYE EN PARAMETRE"""
-      tkId = self.create_image(element.x, element.y, image=element.getTexture(), anchor=SW) 
-      element.setTkId(tkId)
-      self.tag_bind(tkId, '<ButtonPress-1>', self.fenetre.onArbreClick)
-      self.update()
 
 class RessourceInterFace(Canvas):
    def __init__(self, widgetParent, fenetre, background, width, height):
@@ -508,15 +484,6 @@ class Fenetre():
       self.ressourceInterFace = RessourceInterFace(self.zone_ressource, self, "white", width-300, height=50)
       self.ressourceInterFace.grid(column=0, row=0)
       self.zone_ressource.grid(column=0, row=0)
-
-      """CREATION DE L'ARBRE DE COMPETENCE"""
-      
-      self.arbre_competence = Frame(self.zone_jeu)
-      self.arbreCompetence = ArbreCompetence(self.arbre_competence, self, "brown",width-300, height-100)
-      self.arbreCompetence.grid(column=0, row=0)
-      self.arbre_competence.grid(column=0, row=0)
-      self.arbre_competence.grid_forget()
-      self.afficherArbre = False
       
       """VARIABLE"""
       
@@ -531,10 +498,6 @@ class Fenetre():
 
    def setCarte(self, carte):
       self.carte = carte
-
-   def setGameController(self, gameController):
-      self.gameController = gameController
-      self.finTour.config(command=self.gameController.finTour)
       
    def finTour(self):
       self.gameController.finTour()
@@ -560,7 +523,6 @@ class Fenetre():
 
    def onTuileClick(self, event):
       x, y = self.gameZone.translateToIsoScroll(event.x, event.y)
-      print(self.carte.terrain[x][y].i, self.carte.terrain[x][y].j)
       self.userInterface.clear()
       self.gameZone.currentTuile = self.carte.terrain[x][y]
       if len(self.carte.terrain[x][y].getEntite()) > 0:
@@ -628,9 +590,8 @@ class Fenetre():
                   if entite[0].joueur != self.gameController.getJoueurActif():
                      pass
                elif self.carte.terrain[x][y].getBatiment() != None:
-                  print("coucou")
                   if self.carte.terrain[x][y].getBatiment().getJoueur() != self.gameController.getJoueurActif():
-                     print("A l'attaque du batiment")
+                     pass
                else:
                   self.gameZone.moveUnitTo(self.carte.terrain[x][y])
             elif len(self.gameZone.selectedTkId) != 0:
@@ -663,8 +624,6 @@ class Fenetre():
       item = event.widget.find_closest(screenX, screenY)
       for iBouton in self.userInterface.boutonListe:
          if iBouton.tkId == item[0]:
-<<<<<<< HEAD
-
             if self.gameController.getJoueurActif().nbRessource >= iBouton.cout:
                self.gameController.getJoueurActif().nbRessource -= iBouton.cout
                self.ressourceInterFace.actualiser()
@@ -677,48 +636,22 @@ class Fenetre():
                         print(self.gameController.getJoueurActif().listAmelioration)
                         self.userInterface.delete(iBouton.tkId)
                         self.userInterface.delete(iBouton.tkIdText)
+                        self.userInterface.delete(iBouton.tkIdTextePrix)
                      elif iBouton == self.userInterface.boutonAmeliorationCaserne:
                         self.gameController.getJoueurActif().listAmelioration.append("caserne")
                         print(self.gameController.getJoueurActif().listAmelioration)
                         self.userInterface.delete(iBouton.tkId)
                         self.userInterface.delete(iBouton.tkIdText)
+                        self.userInterface.delete(iBouton.tkIdTextePrix)
                      elif iBouton == self.userInterface.boutonAmeliorationDegat:
                         print("lames forgees")
                      elif iBouton == self.userInterface.boutonAmeliorationPa:
-                        print("+1 PA")                     
-   
-               if iBouton.categorie == "amelioration":
-                  if iBouton == self.userInterface.boutonOuvrier:
-                     self.gameController.getJoueurActif().nbOuvrier += 1
-                     print (self.gameController.getJoueurActif().nbOuvrier)
-                  elif  iBouton == self.userInterface.boutonAmeliorationTour:
-                     self.gameController.getJoueurActif().listAmelioration.append("tour")
-                     print(self.gameController.getJoueurActif().listAmelioration)
-                     self.userInterface.delete(iBouton.tkId)
-                     self.userInterface.delete(iBouton.tkIdText)
-                  elif iBouton == self.userInterface.boutonAmeliorationCaserne:
-                     self.gameController.getJoueurActif().listAmelioration.append("caserne")
-                     print(self.gameController.getJoueurActif().listAmelioration)
-                     self.userInterface.delete(iBouton.tkId)
-                     self.userInterface.delete(iBouton.tkIdText)
-=======
-            if iBouton.categorie == "amelioration":
-               if iBouton == self.userInterface.boutonOuvrier:
-                  self.gameController.getJoueurActif().nbOuvrier += 1
-                  print (self.gameController.getJoueurActif().nbOuvrier)
-               elif  iBouton == self.userInterface.boutonAmeliorationTour:
-                  self.gameController.getJoueurActif().listAmelioration.append("tour")
-                  print(self.gameController.getJoueurActif().listAmelioration)
-                  self.userInterface.delete(iBouton.tkId)
-                  self.userInterface.delete(iBouton.tkIdText)
-               elif iBouton == self.userInterface.boutonAmeliorationCaserne:
-                  self.gameController.getJoueurActif().listAmelioration.append("caserne")
-                  print(self.gameController.getJoueurActif().listAmelioration)
-                  self.userInterface.delete(iBouton.tkId)
-                  self.userInterface.delete(iBouton.tkIdText)
-            else :
-               if self.gameController.getJoueurActif().nbRessource >= iBouton.cout:
-                  self.gameController.getJoueurActif().nbRessource -= iBouton.cout
+                        print("+1 PA")
+               elif iBouton.categorie == "recrutement":
+                  element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
+                  if element != None:
+                     self.gameZone.afficherElementIndex(element)                  
+               else:
                   element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
                   if element != None:
                      self.gameZone.afficherElementIndex(element)
@@ -728,61 +661,8 @@ class Fenetre():
                   #element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
                   self.ressourceInterFace.actualiser()
                   print(element)
-<<<<<<< HEAD
-               else :
-                  print("pas assez d'argent")
-=======
-                  #if element != None:
-                     #self.gameZone.afficherElementIndex(element)
-                  #self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
-                  #self.gameZone.selectTerritoire(self.gameZone.currentCity)
-                  #self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
-                  #self.ressourceInterFace.actualiser()
->>>>>>> origin/master
-               else :
-                  if self.gameController.getJoueurActif().nbRessource >= iBouton.cout:
-                     self.gameController.getJoueurActif().nbRessource -= iBouton.cout
-                     element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
-                     print(element)
-                     if element != None:
-                        self.gameZone.afficherElementIndex(element)
-                     self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
-                     self.gameZone.selectTerritoire(self.gameZone.currentCity)
-                     self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
-                  #element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
-                  #print(element)
-                  #if element != None:
-                     #self.gameZone.afficherElementIndex(element)
-                  #self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
-                  #self.gameZone.selectTerritoire(self.gameZone.currentCity)
-                  #self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
-                     element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
-                     print(element)
-                     if element != None:
-                        self.gameZone.afficherElementIndex(element)
-                     self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
-                     self.gameZone.selectTerritoire(self.gameZone.currentCity)
-                     self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
-                     self.ressourceInterFace.actualiser()
-   
-                  else :
-                        element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
-                        print(element)
-                        if element != None:
-                           self.gameZone.afficherElementIndex(element)
-                        self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
-                        self.gameZone.selectTerritoire(self.gameZone.currentCity)
-                        self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
-                        element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
-                        print(element)
-                        if element != None:
-                           self.gameZone.afficherElementIndex(element)
-                        self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
-                        self.gameZone.selectTerritoire(self.gameZone.currentCity)
-                        self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
             else :
-               print("pas assez de thunes")
->>>>>>> origin/master
+               print("pas assez d'argent")
 
    def onKeyPress(self, event):
       """METHODE APPELE QUAND UNE TOUCHE DU CLAVIER EST ENFONCE"""

@@ -28,7 +28,12 @@ class GameController():
       for iEntite in self.joueurActif.entiteResetDeplacement:
          iEntite.setMoove(True)
       for iEntite in self.joueurActif.entiteResetCombat:
-         iEntite.setCanAttack(True)             
+         iEntite.setCanAttack(True)
+      
+      if self.joueur1.nbRessource >= 2000:
+         print("FIN DE LA PARTIE LE JOUEUR 1 A GAGNER")
+      if self.joueur2.nbRessource >= 2000:
+         print("FIN DE LA PARTIE LE JOUEUR 2 A GAGNER")      
          
       self.etat = "En jeu"
    
@@ -57,17 +62,16 @@ class GameController():
       else:
          #entite2 contre attaque et survie
          entite2.vie -= degat
-         pass
       #contre attaque
       if entite1.vie - degatContreAttaque <= 0:
          #entite1 meurt
-         entite1.parent.removeEntite(entite1)
-         gameZone.supprimerEntite(entite1)         
-         pass
+         if not entite1.nom == "Archer":
+            entite1.parent.removeEntite(entite1)
+            gameZone.supprimerEntite(entite1)         
       else:
          #entite1 un prend des degats et survie
-         entite1.vie -= degatContreAttaque
-         pass
+         if not entite1.nom == "Archer":
+            entite1.vie -= degatContreAttaque
       
    def combatBatiment(self, entite, batiment, gameZone):
       """FONCTION QUI GERE LE COMBAT DE L'ENTITE 1 QUI ATTAQUE L'ENTITE 2"""
@@ -77,5 +81,13 @@ class GameController():
          batiment.parent.batiment = None
          gameZone.supprimerElement(batiment)
          self.batiment.getJoueur().villeDepart.territoire.remove(batiment)
+         if batiment.getNom() == "Champ":
+            batiment.getJoueur().champs -= 1
+         if batiment.getNom() == "Scierie":
+            batiment.getJoueur().scieries -= 1
+         if batiment.getNom() == "Mine":
+            batiment.getJoueur().mine -= 1
+         if batiment.getNom() == "Entrepot":
+            batiment.getJoueur().nbMaxRessource -= 100         
       else:
          batiment.vie -= entite.attaqueBatiment
