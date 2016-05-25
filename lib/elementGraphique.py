@@ -190,7 +190,7 @@ class MairieRessource(Mairie):
 class Ferme(BatimentSpecial):
    def __init__(self, x, y, joueur, parent):
       BatimentSpecial.__init__(self, x, y, joueur, parent, textureName = "ferme.gif", textureDesc="testTuile2D.gif")
-      self.production = 10
+      self.production = 5
       self.territoire = list() #Tableau contenant les tuiles qui sont reliées a la ville
       self.territoire.append(parent)
       self.description = "100% bio"
@@ -207,7 +207,6 @@ class Champ(Batiment):
    def __init__(self, x, y, joueur, parent):
       joueur.champs += 1
       Batiment.__init__(self, x, y, joueur, parent, textureName = "champ.gif", textureDesc="testTuile2D.gif")
-      self.production = 30
       self.description = "Cool pour planter du ble, des bettraves, des carottes ou de la beuh"
       self.nom = "Champ"
       self.etatAnimation = 0
@@ -237,10 +236,10 @@ class Entrepot(Batiment):
 class Scierie(Batiment):
    def __init__(self, x, y, joueur, parent):
       Batiment.__init__(self, x, y, joueur, parent, textureName = "bucheron.gif", textureDesc="testTuile2D.gif")
-      self.production = 10
+      self.production = 5
       self.description = "Un nouveau pouvoir grandit"
       self.nom = "Scierie"
-      
+
 class Tour(Batiment):
    def __init__(self, x, y, joueur, parent):
       Batiment.__init__(self, x, y, joueur, parent, textureName = "tour.gif", textureDesc="testTuile2D.gif")
@@ -394,7 +393,7 @@ class BoutonChamp(Bouton):
 class BoutonEntrepot(Bouton):
    def __init__(self, textureName="bouton_entrepot.gif"):
       Bouton.__init__(self, textureName)
-      self.cout = 20
+      self.cout = 40
       self.categorie = "construction"
       self.description = "Construire un entrepot"
    def event(self, tuile, joueur):
@@ -452,7 +451,7 @@ class BoutonRecrutementEpeiste(Bouton):
    def __init__(self, textureName="bouton_recrutement_epeiste.gif"):
       Bouton.__init__(self, textureName)
       self.cout = 60
-      self.categorie = "recrutement"
+      self.categorie = "amelioration"
       self.description = "Recruter un epeiste"
 
    def event(self, tuile, joueur):
@@ -472,6 +471,20 @@ class boutonAmeliorationTour(Bouton):
       self.cout = 20
       self.categorie = "amelioration"
       self.description = "Debloque les tours"
+
+class boutonAmeliorationDegat(Bouton):
+   def __init__(self, textureName="bouton_amelioration_degat.gif"):
+      Bouton.__init__(self, textureName)
+      self.cout = 100
+      self.categorie = "amelioration"
+      self.description = "augmente les degats"
+
+class boutonAmeliorationPa(Bouton):
+   def __init__(self, textureName="bouton_amelioration_Pa.gif"):
+      Bouton.__init__(self, textureName)
+      self.cout = 100
+      self.categorie = "amelioration"
+      self.description = "augmente le nombre de PA"
 
 
 class FondRessource(ElementGraphique):

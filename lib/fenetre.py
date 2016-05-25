@@ -287,8 +287,11 @@ class UserInterface(Canvas):
       self.boutonRecrutementEpeiste = elementGraphique.BoutonRecrutementEpeiste()
       self.boutonAmeliorationCaserne = elementGraphique.BoutonAmeliorationCaserne()
       self.boutonAmeliorationTour = elementGraphique.boutonAmeliorationTour()
+      self.boutonAmeliorationDegat = elementGraphique.boutonAmeliorationDegat()
+      self.boutonAmeliorationPa = elementGraphique.boutonAmeliorationPa()
       self.boutonListe.append(self.boutonAmeliorationCaserne)
       self.boutonListe.append(self.boutonAmeliorationTour)
+      self.boutonListe.append(self.boutonAmeliorationPa)
       self.boutonListe.append(self.boutonTour)
       self.boutonListe.append(self.boutonChamp)
       self.boutonListe.append(self.boutonEntrepot)
@@ -301,7 +304,7 @@ class UserInterface(Canvas):
       self.boutonListe.append(self.boutonMoulin)
       self.boutonListe.append(self.boutonForge)
       self.boutonListe.append(self.boutonFerme)
-
+      self.boutonListe.append(self.boutonAmeliorationDegat)
 
    def afficherBouton(self, element):
       """AFFICHE UN OBJET DE TYPE ELEMENT GRAPHIQUE ENVOYE EN PARAMETRE"""
@@ -343,13 +346,13 @@ class UserInterface(Canvas):
                 #  self.boutonChemin.setIndice(4)
                 #  self.afficherBouton(self.boutonCaserne)zzz
                #else:
-               self.afficherBouton(self.boutonTour)
+               self.afficherBouton(self.boutonChemin)
                self.afficherBouton(self.boutonFerme)
                self.afficherBouton(self.boutonForge)
                self.afficherBouton(self.boutonEntrepot)
                joueurActif = self.fenetre.gameController.getJoueurActif()
                if "caserne" in joueurActif.listAmelioration :
-                  self.afficherBouton(self.boutonCaserne)               
+                  self.afficherBouton(self.boutonCaserne)
                   if "tour" in joueurActif.listAmelioration :
                      self.afficherBouton(self.boutonChemin)
                
@@ -368,7 +371,12 @@ class UserInterface(Canvas):
       else:
          if tuile.getBatiment().getNom() == "Caserne":
             self.boutonRecrutementEpeiste.setIndice(0)
-            self.afficherBouton(self.boutonRecrutementEpeiste)           
+            self.afficherBouton(self.boutonRecrutementEpeiste)
+            self.boutonAmeliorationPa.setIndice(1)
+            self.afficherBouton(self.boutonAmeliorationPa)
+         elif tuile.getBatiment().getNom() == "Forge":
+            self.boutonAmeliorationDegat.setIndice(0)
+            self.afficherBouton(self.boutonAmeliorationDegat)
          
       
    
@@ -616,41 +624,44 @@ class Fenetre():
       item = event.widget.find_closest(screenX, screenY)
       for iBouton in self.userInterface.boutonListe:
          if iBouton.tkId == item[0]:
-            if iBouton.categorie == "amelioration":
-               if iBouton == self.userInterface.boutonOuvrier:
-                  self.gameController.getJoueurActif().nbOuvrier += 1
-                  print (self.gameController.getJoueurActif().nbOuvrier)
-               elif  iBouton == self.userInterface.boutonAmeliorationTour:
-                  self.gameController.getJoueurActif().listAmelioration.append("tour")
-                  print(self.gameController.getJoueurActif().listAmelioration)
-                  self.userInterface.delete(iBouton.tkId)
-                  self.userInterface.delete(iBouton.tkIdText)
-               elif iBouton == self.userInterface.boutonAmeliorationCaserne:
-                  self.gameController.getJoueurActif().listAmelioration.append("caserne")
-                  print(self.gameController.getJoueurActif().listAmelioration)
-                  self.userInterface.delete(iBouton.tkId)
-                  self.userInterface.delete(iBouton.tkIdText)
-            else :
-               if self.gameController.getJoueurActif().nbRessource >= iBouton.cout:
-                  self.gameController.getJoueurActif().nbRessource -= iBouton.cout
-                  element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
-                  print(element)
-                  if element != None:
-                     self.gameZone.afficherElementIndex(element)
-                  self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
-                  self.gameZone.selectTerritoire(self.gameZone.currentCity)
-                  self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
-
-                  element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
-                  print(element)
-                  if element != None:
-                     self.gameZone.afficherElementIndex(element)
-                  self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
-                  self.gameZone.selectTerritoire(self.gameZone.currentCity)
-                  self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
-                  self.ressourceInterFace.actualiser()
+            if self.gameController.getJoueurActif().nbRessource >= iBouton.cout:
+               self.gameController.getJoueurActif().nbRessource -= iBouton.cout
+               self.ressourceInterFace.actualiser()
+               if iBouton.categorie == "amelioration":
+                     if iBouton == self.userInterface.boutonOuvrier:
+                        self.gameController.getJoueurActif().nbOuvrier += 1
+                        print (self.gameController.getJoueurActif().nbOuvrier)
+                     elif  iBouton == self.userInterface.boutonAmeliorationTour:
+                        self.gameController.getJoueurActif().listAmelioration.append("tour")
+                        print(self.gameController.getJoueurActif().listAmelioration)
+                        self.userInterface.delete(iBouton.tkId)
+                        self.userInterface.delete(iBouton.tkIdText)
+                     elif iBouton == self.userInterface.boutonAmeliorationCaserne:
+                        self.gameController.getJoueurActif().listAmelioration.append("caserne")
+                        print(self.gameController.getJoueurActif().listAmelioration)
+                        self.userInterface.delete(iBouton.tkId)
+                        self.userInterface.delete(iBouton.tkIdText)
+                     elif iBouton == self.userInterface.boutonAmeliorationDegat:
+                        print("lames forgees")
+                     elif iBouton == self.userInterface.boutonAmeliorationPa:
+                        print("+1 PA")                     
                else :
-                  print("pas assez de thunes")
+                     element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
+                     print(element)
+                     if element != None:
+                        self.gameZone.afficherElementIndex(element)
+                     self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
+                     self.gameZone.selectTerritoire(self.gameZone.currentCity)
+                     self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
+                     element = iBouton.event(self.gameZone.currentTuile, self.gameController.getJoueurActif())
+                     print(element)
+                     if element != None:
+                        self.gameZone.afficherElementIndex(element)
+                     self.gameZone.currentCity.getBatiment().addTerritoire(self.gameZone.currentTuile)
+                     self.gameZone.selectTerritoire(self.gameZone.currentCity)
+                     self.gameZone.selectTerritoireMairie(self.gameZone.currentCity)
+            else :
+               print("pas assez de thunes")
 
    def onKeyPress(self, event):
       """METHODE APPELE QUAND UNE TOUCHE DU CLAVIER EST ENFONCE"""
